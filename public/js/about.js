@@ -1,13 +1,14 @@
-/** Про нас: галерея інтер'єру — карусель Swiper + перегляд у збільшеному форматі через GLightbox (обидві з CDN). */
+/** Про нас: галерея плакатів — карусель Swiper і перегляд у збільшеному форматі через GLightbox (обидві бібліотеки з CDN). */
 if (typeof window.Swiper === 'function') {
   new window.Swiper('#gallery', {
     slidesPerView: 1.15,
     spaceBetween: 16,
     keyboard: { enabled: true },
-    a11y: { prevSlideMessage: 'Попереднє фото', nextSlideMessage: 'Наступне фото', paginationBulletMessage: 'Перейти до фото {{index}}' },
+    a11y: { prevSlideMessage: 'Попередній плакат', nextSlideMessage: 'Наступний плакат', paginationBulletMessage: 'Перейти до плаката {{index}}' },
     pagination: { el: '#gallery .swiper-pagination', clickable: true },
     navigation: { nextEl: '[data-gallery-next]', prevEl: '[data-gallery-prev]' },
-    breakpoints: { 768: { slidesPerView: 2.2, spaceBetween: 24 } },
+    grabCursor: true,
+    breakpoints: { 768: { slidesPerView: 2.3, spaceBetween: 24 } },
   });
 } else {
   document.querySelectorAll('[data-gallery-next],[data-gallery-prev]').forEach((b) => { b.hidden = true; });

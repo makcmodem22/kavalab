@@ -110,7 +110,9 @@ export function calculatePrice(config, rawSelection) {
 
   const lines = [];
   const basePrice = Math.round(base.price * size.multiplier);
-  lines.push({ label: `${base.name}, ${size.name} · ${size.volume} мл`, amount: basePrice });
+  // В еспресо обʼєм свій (40–80 мл), у решти напоїв — обʼєм обраного розміру
+  const volume = base.volumes?.[size.id] ?? size.volume;
+  lines.push({ label: `${base.name}, ${size.name} · ${volume} мл`, amount: basePrice });
 
   if (milk.id !== 'none') {
     lines.push({ label: `Молоко: ${milk.name.toLowerCase()}`, amount: Math.round(milk.price * size.multiplier) });

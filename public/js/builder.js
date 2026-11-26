@@ -1,11 +1,14 @@
 /**
  * Конструктор напою — головний інтерактивний віджет сайту.
  * 1) Опції (основа, розмір, молоко, сиропи, топінги) приходять з data.json.
- * 2) На кожну зміну форми перераховується ціна (логіка — у pricing.js) і перемальовується чашка.
+ * 2) На кожну зміну форми перераховується ціна (логіка — у pricing.js) і оновлюються шари в келиху
+ *    (формула — у formula.js, сам келих — у glass.js).
  * 3) Готовий напій можна додати в замовлення або зберегти в «Мої напої» (localStorage).
  */
 import { loadData, renderLoadError, escapeHTML } from './data.js';
 import { calculatePrice, describeDrink, formatUAH, applyPromo } from './pricing.js';
+import { buildLayers } from './formula.js';
+import { createGlass, legendHTML } from './glass.js';
 
 const ORDER_KEY = 'kavalab-order';
 const FAVORITES_KEY = 'kavalab-favorites';
@@ -19,7 +22,8 @@ const el = {
   syrupHint: $('syrup-hint'), sugarOut: $('sugar-out'),
   quantity: $('quantity'), quantityError: $('quantity-error'),
   promo: $('promo'), promoError: $('promo-error'), promoOk: $('promo-ok'),
-  cup: $('cup-visual'), drinkName: $('drink-name'), lines: $('price-lines'), warnings: $('warnings'),
+  cup: $('cup-visual'), drinkName: $('drink-name'), drinkVolume: $('drink-volume'),
+  legend: $('formula-legend'), lines: $('price-lines'), warnings: $('warnings'),
   unit: $('price-unit'), subtotal: $('price-subtotal'), discountRow: $('discount-row'), discount: $('price-discount'), total: $('price-total'),
   addBtn: $('add-to-order'), favBtn: $('save-favorite'), status: $('builder-status'),
   orderList: $('order-list'), orderEmpty: $('order-empty'), orderTotal: $('order-total'), orderFooter: $('order-footer'),
@@ -30,6 +34,7 @@ const el = {
 let config = null;
 let appliedPromo = '';
 let lastResult = null;
+let updateGlass = null;
 
 /* ---------- localStorage з перевіркою даних ---------- */
 function readList(key) {
@@ -63,8 +68,8 @@ function optionCard({ type, name, value, title, sub, checked }) {
   return `
     <label class="option-card">
       <input class="sr-only" type="${type}" name="${name}" value="${value}" ${checked ? 'checked' : ''}>
-      <span class="font-semibold">${escapeHTML(title)}</span>
-      <span class="text-sm text-espresso/70 dark:text-latte/70">${sub}</span>
+      <span class="font-bold">${escapeHTML(title)}</span>
+      <span class="option-note">${sub}</span>
     </label>`;
 }
 
@@ -125,45 +130,12 @@ function setFieldError(input, errorEl, message) {
   errorEl.textContent = message;
 }
 
-/* ---------- візуалізація чашки ---------- */
-function mix(hexA, hexB, t) {
-  const a = hexA.match(/\w\w/g).map((h) => parseInt(h, 16));
-  const b = hexB.match(/\w\w/g).map((h) => parseInt(h, 16));
-  return `#${a.map((v, i) => Math.round(v + (b[i] - v) * t).toString(16).padStart(2, '0')).join('')}`;
-}
-
-function renderCup(selection) {
-  const base = config.bases.find((b) => b.id === selection.base);
-  const milk = config.milks.find((m) => m.id === selection.milk);
-  const size = config.sizes.findIndex((s) => s.id === selection.size);
-  const has = (id) => selection.extras.includes(id);
-
-  const fill = [0.55, 0.7, 0.85][size] ?? 0.55;
-  const top = 40, bottom = 230;
-  const level = Math.round(bottom - (bottom - top) * fill);
-  let coffee = base.color;
-  if (has('shot')) coffee = mix(coffee, '#2b1a12', 0.25);
-  const liquid = milk.color ? mix(coffee, milk.color, 0.15) : coffee;
-  const foamH = milk.color && base.milk ? 22 : 0;
-
-  const drops = selection.syrups.map((_, i) => `<circle cx="${92 + i * 18}" cy="${bottom - 16}" r="5" fill="#e0a15e" opacity=".85"/>`).join('');
-  const cream = has('cream') ? `<path d="M60 ${level - foamH + 4}c0-22 22-30 50-30s50 8 50 30z" fill="#fffaf2"/><circle cx="110" cy="${level - foamH - 28}" r="14" fill="#fffaf2"/>` : '';
-  const choco = has('chocolate') ? [0, 1, 2, 3, 4].map((i) => `<rect x="${78 + i * 15}" y="${level - foamH - 6 - (i % 2) * 6}" width="6" height="3" rx="1.5" fill="#4a2a18"/>`).join('') : '';
-  const cinnamon = has('cinnamon') ? [0, 1, 2, 3, 4, 5].map((i) => `<circle cx="${80 + i * 12}" cy="${level - foamH + 6 + (i % 3) * 3}" r="1.6" fill="#8a4b22"/>`).join('') : '';
-  const marsh = has('marshmallow') ? `<rect x="78" y="${level - foamH - 12}" width="16" height="14" rx="4" fill="#fde7ee"/><rect x="118" y="${level - foamH - 14}" width="16" height="14" rx="4" fill="#fff"/>` : '';
-
-  el.cup.innerHTML = `
-    <defs><clipPath id="glass"><path d="M46 30h128l-14 210H60z"/></clipPath></defs>
-    <ellipse cx="110" cy="248" rx="70" ry="9" fill="currentColor" opacity=".12"/>
-    <path d="M46 30h128l-14 210H60z" fill="#ffffff" opacity=".35"/>
-    <g clip-path="url(#glass)">
-      <rect x="40" y="${level}" width="140" height="${bottom - level + 20}" fill="${liquid}" style="transition:y .3s, fill .3s"/>
-      ${foamH ? `<rect x="40" y="${level - foamH}" width="140" height="${foamH}" fill="${milk.color}"/>` : ''}
-      ${drops}
-    </g>
-    ${cream}${choco}${cinnamon}${marsh}
-    <path d="M46 30h128l-14 210H60z" fill="none" stroke="currentColor" stroke-opacity=".35" stroke-width="3"/>
-    <text x="110" y="${bottom - 40}" text-anchor="middle" font-size="22" font-weight="700" fill="#fff8ee" opacity=".9">${config.sizes[size]?.name ?? ''}</text>`;
+/* ---------- келих із шарами ---------- */
+function renderGlass(selection) {
+  const formula = buildLayers(config, selection);
+  updateGlass(formula);
+  el.legend.innerHTML = legendHTML(formula.layers);
+  el.drinkVolume.textContent = `${formula.volume} мл`;
 }
 
 /* ---------- головний цикл: перерахунок ---------- */
@@ -171,10 +143,10 @@ function update() {
   const result = calculatePrice(config, readSelection());
   lastResult = result;
   syncForm(result.selection);
-  renderCup(result.selection);
+  renderGlass(result.selection);
 
   el.drinkName.textContent = describeDrink(config, result.selection);
-  el.lines.innerHTML = result.lines.map((l) => `<li class="flex justify-between gap-4"><span>${escapeHTML(l.label)}</span><span class="shrink-0 tabular-nums">${l.amount ? formatUAH(l.amount) : '0 ₴'}</span></li>`).join('');
+  el.lines.innerHTML = result.lines.map((l) => `<li class="flex justify-between gap-4"><span>${escapeHTML(l.label)}</span><span class="shrink-0">${formatUAH(l.amount)}</span></li>`).join('');
   el.warnings.textContent = result.warnings.join(' ');
   el.unit.textContent = formatUAH(result.unitPrice);
   el.subtotal.textContent = result.quantity ? `${formatUAH(result.subtotal)} (${result.quantity} шт.)` : '—';
@@ -213,10 +185,15 @@ function renderOrder() {
   el.orderEmpty.hidden = order.length > 0;
   el.orderFooter.hidden = order.length === 0;
   el.orderList.innerHTML = order.map((line, i) => `
-    <li class="flex items-start justify-between gap-4 py-3">
-      <div><p class="font-semibold">${escapeHTML(line.title)}</p><p class="text-sm text-espresso/70 dark:text-latte/70">${line.quantity} × ${formatUAH(line.unitPrice)}${line.discount ? ` · знижка ${formatUAH(line.discount)}` : ''}</p></div>
-      <div class="flex shrink-0 items-center gap-2"><span class="font-bold tabular-nums">${formatUAH(line.total)}</span>
-        <button type="button" class="rounded-full p-2 hover:bg-espresso/10 dark:hover:bg-latte/10" data-remove-line="${i}" aria-label="Видалити: ${escapeHTML(line.title)}">✕</button></div>
+    <li class="rule flex items-start justify-between gap-4 border-b py-4">
+      <div>
+        <p class="font-bold">${escapeHTML(line.title)}</p>
+        <p class="muted font-mono text-sm">${line.quantity} × ${formatUAH(line.unitPrice)}${line.discount ? ` · знижка ${formatUAH(line.discount)}` : ''}</p>
+      </div>
+      <div class="flex shrink-0 items-center gap-3">
+        <span class="font-mono font-bold">${formatUAH(line.total)}</span>
+        <button type="button" class="btn-icon h-11 w-11 text-base" data-remove-line="${i}" aria-label="Видалити: ${escapeHTML(line.title)}">✕</button>
+      </div>
     </li>`).join('');
   const sum = order.reduce((s, l) => s + (Number(l.total) || 0), 0);
   el.orderTotal.textContent = formatUAH(sum);
@@ -247,11 +224,11 @@ function renderFavorites() {
   const favs = readList(FAVORITES_KEY);
   el.favEmpty.hidden = favs.length > 0;
   el.favList.innerHTML = favs.map((f, i) => `
-    <li class="flex flex-wrap items-center justify-between gap-3 py-3">
-      <span class="min-w-0 flex-1">${escapeHTML(describeDrink(config, calculatePrice(config, f).selection))}</span>
-      <span class="flex gap-2">
-        <button type="button" class="chip py-1.5" data-use-fav="${i}">Повторити</button>
-        <button type="button" class="chip py-1.5" data-del-fav="${i}" aria-label="Видалити напій ${i + 1}">Видалити</button>
+    <li class="rule flex flex-wrap items-center justify-between gap-3 border-b py-4">
+      <span class="min-w-0 flex-1 font-bold">${escapeHTML(describeDrink(config, calculatePrice(config, f).selection))}</span>
+      <span class="flex gap-5">
+        <button type="button" class="link" data-use-fav="${i}">Повторити</button>
+        <button type="button" class="link muted" data-del-fav="${i}" aria-label="Видалити напій ${i + 1}">Видалити</button>
       </span>
     </li>`).join('');
 }
@@ -349,6 +326,7 @@ async function init() {
     renderLoadError($('builder-error'), () => location.reload());
     return;
   }
+  updateGlass = createGlass(el.cup);
   renderOptions(new URLSearchParams(location.search).get('base'));
   bindEvents();
   update();

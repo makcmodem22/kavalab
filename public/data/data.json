@@ -22,9 +22,9 @@
     { "id": "iced-latte", "name": "Айс лате", "category": "cold", "price": 95, "volume": "350 мл", "description": "Холодне молоко, лід і подвійний еспресо. Можна з будь-яким рослинним молоком.", "tags": [], "vegan": false, "art": { "type": "iced", "liquid": "#c8a07a", "foam": "#efe0cc" } },
     { "id": "matcha", "name": "Матча лате", "category": "tea", "price": 105, "volume": "350 мл", "description": "Японська церемоніальна матча з вівсяним молоком.", "tags": [], "vegan": true, "art": { "type": "glass", "liquid": "#9bb472", "foam": "#eef3e1" } },
     { "id": "cocoa", "name": "Какао з маршмелоу", "category": "tea", "price": 80, "volume": "300 мл", "description": "Справжнє какао на молоці з підсмаженими маршмелоу.", "tags": [], "vegan": false, "art": { "type": "cup", "liquid": "#6e4029", "foam": "#fff4ea" } },
-    { "id": "croissant", "name": "Круасан з мигдалем", "category": "dessert", "price": 75, "volume": "110 г", "description": "Печемо щоранку з французького масла. Хрусткий зовні, вологий усередині.", "tags": ["hit"], "vegan": false, "art": { "type": "plate", "liquid": "#d99a4e", "foam": "#f1d3a4" } },
-    { "id": "cheesecake", "name": "Чизкейк Сан-Себастьян", "category": "dessert", "price": 120, "volume": "150 г", "description": "Карамелізована скоринка і кремова серединка. Без борошна.", "tags": [], "vegan": false, "art": { "type": "plate", "liquid": "#b8723a", "foam": "#f6e3c2" } },
-    { "id": "vegan-brownie", "name": "Веган-брауні", "category": "dessert", "price": 85, "volume": "90 г", "description": "Насичений шоколадний брауні на кокосовій олії з волоським горіхом.", "tags": ["new"], "vegan": true, "art": { "type": "plate", "liquid": "#4b2a1c", "foam": "#7b4a32" } }
+    { "id": "croissant", "name": "Круасан з мигдалем", "category": "dessert", "price": 75, "volume": "110 г", "description": "Печемо щоранку з французького масла. Хрусткий зовні, вологий усередині.", "tags": ["hit"], "vegan": false, "art": { "type": "croissant", "liquid": "#d99a4e", "foam": "#f1d3a4" } },
+    { "id": "cheesecake", "name": "Чизкейк Сан-Себастьян", "category": "dessert", "price": 120, "volume": "150 г", "description": "Карамелізована скоринка і кремова серединка. Без борошна.", "tags": [], "vegan": false, "art": { "type": "slice", "liquid": "#b8723a", "foam": "#f6e3c2" } },
+    { "id": "vegan-brownie", "name": "Веган-брауні", "category": "dessert", "price": 85, "volume": "90 г", "description": "Насичений шоколадний брауні на кокосовій олії з волоським горіхом.", "tags": ["new"], "vegan": true, "art": { "type": "brownie", "liquid": "#4b2a1c", "foam": "#7b4a32" } }
   ],
   "reviews": [
     { "name": "Олена К.", "role": "дизайнерка, постійна гостя", "rating": 5, "text": "Конструктор напою — геніально. Зібрала собі раф на вівсяному з лавандою, тепер замовляю тільки його." },
@@ -35,12 +35,12 @@
   ],
   "builder": {
     "bases": [
-      { "id": "espresso", "name": "Еспресо", "price": 50, "milk": false, "color": "#3b2014", "hint": "40 мл чистої кави" },
-      { "id": "americano", "name": "Американо", "price": 55, "milk": "optional", "color": "#4a2a18", "hint": "еспресо + гаряча вода" },
-      { "id": "cappuccino", "name": "Капучино", "price": 70, "milk": true, "color": "#a8774f", "hint": "еспресо + густа піна" },
-      { "id": "latte", "name": "Лате", "price": 75, "milk": true, "color": "#c49a72", "hint": "більше молока, мʼякий смак" },
-      { "id": "flat-white", "name": "Флет вайт", "price": 80, "milk": true, "color": "#8d5c3a", "hint": "подвійний шот, тонка піна" },
-      { "id": "raf", "name": "Раф", "price": 90, "milk": true, "color": "#d9b48a", "hint": "еспресо + збиті вершки" }
+      { "id": "espresso", "name": "Еспресо", "price": 50, "milk": false, "color": "#3b2014", "hint": "40 мл чистої кави", "recipe": { "coffee": 1 }, "volumes": { "s": 40, "m": 60, "l": 80 } },
+      { "id": "americano", "name": "Американо", "price": 55, "milk": "optional", "color": "#4a2a18", "hint": "еспресо + гаряча вода", "recipe": { "coffee": 1, "water": 3, "milk": 0.5 } },
+      { "id": "cappuccino", "name": "Капучино", "price": 70, "milk": true, "color": "#a8774f", "hint": "еспресо + густа піна", "recipe": { "coffee": 1, "milk": 1.5, "foam": 1.5 } },
+      { "id": "latte", "name": "Лате", "price": 75, "milk": true, "color": "#c49a72", "hint": "більше молока, мʼякий смак", "recipe": { "coffee": 1, "milk": 4, "foam": 0.8 } },
+      { "id": "flat-white", "name": "Флет вайт", "price": 80, "milk": true, "color": "#8d5c3a", "hint": "подвійний шот, тонка піна", "recipe": { "coffee": 2, "milk": 3, "foam": 0.4 } },
+      { "id": "raf", "name": "Раф", "price": 90, "milk": true, "color": "#d9b48a", "hint": "еспресо + збиті вершки", "recipe": { "coffee": 1, "milk": 3.5, "foam": 1 } }
     ],
     "sizes": [
       { "id": "s", "name": "S", "volume": 250, "multiplier": 1 },
@@ -56,11 +56,11 @@
       { "id": "coconut", "name": "Кокосове", "price": 25, "color": "#f7f1e6" }
     ],
     "syrups": [
-      { "id": "vanilla", "name": "Ваніль", "price": 12 },
-      { "id": "caramel", "name": "Солона карамель", "price": 12 },
-      { "id": "hazelnut", "name": "Лісовий горіх", "price": 12 },
-      { "id": "lavender", "name": "Лаванда", "price": 15 },
-      { "id": "coconut", "name": "Кокос", "price": 12 }
+      { "id": "vanilla", "name": "Ваніль", "color": "#e9c77b", "price": 12 },
+      { "id": "caramel", "name": "Солона карамель", "color": "#c47a2c", "price": 12 },
+      { "id": "hazelnut", "name": "Лісовий горіх", "color": "#9a6a3a", "price": 12 },
+      { "id": "lavender", "name": "Лаванда", "color": "#a995c9", "price": 15 },
+      { "id": "coconut", "name": "Кокос", "color": "#efe6d2", "price": 12 }
     ],
     "extras": [
       { "id": "shot", "name": "Додатковий шот еспресо", "price": 20 },

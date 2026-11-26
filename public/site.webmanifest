@@ -4,8 +4,8 @@
   "lang": "uk",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f6efe6",
-  "theme_color": "#2b1a12",
+  "background_color": "#f4f1ea",
+  "theme_color": "#16130f",
   "icons": [
     { "src": "img/favicon.svg", "sizes": "any", "type": "image/svg+xml" },
     { "src": "img/icon-512.png", "sizes": "512x512", "type": "image/png" }

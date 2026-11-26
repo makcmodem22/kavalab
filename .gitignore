@@ -1,6 +1,8 @@
 node_modules/
 .vercel/
+# Результати збірки: CSS від Tailwind і сторінки, зібрані з src/pages
 public/css/styles.css
+public/*.html
 .DS_Store
 *.log
 .vercel

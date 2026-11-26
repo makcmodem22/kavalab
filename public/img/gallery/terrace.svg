@@ -1,12 +1,53 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="t"><title id="t">Літня тераса під парасолями</title>
-<rect width="800" height="600" fill="#cfe2e6"/>
-<circle cx="660" cy="110" r="60" fill="#f3d9b5"/>
-<rect y="300" width="800" height="300" fill="#e9d2b4"/>
-<g fill="#d8b994"><rect x="0" y="300" width="800" height="16"/></g>
-<g><path d="M120 200 260 140l140 60z" fill="#b86b2a"/><rect x="256" y="200" width="8" height="220" fill="#6b3e26"/>
-<path d="M440 210 580 150l140 60z" fill="#3f7a5a"/><rect x="576" y="210" width="8" height="210" fill="#6b3e26"/></g>
-<g fill="#6b3e26"><ellipse cx="260" cy="420" rx="90" ry="16"/><rect x="254" y="420" width="12" height="90"/><ellipse cx="580" cy="420" rx="90" ry="16"/><rect x="574" y="420" width="12" height="90"/></g>
-<g fill="#2b1a12"><rect x="130" y="430" width="50" height="80" rx="10"/><rect x="340" y="430" width="50" height="80" rx="10"/><rect x="450" y="430" width="50" height="80" rx="10"/><rect x="660" y="430" width="50" height="80" rx="10"/></g>
-<g fill="#fff8ee"><path d="M240 388h26l-3 26h-20z"/><path d="M560 388h26l-3 26h-20z"/><path d="M594 392h22l-2 22h-18z"/></g>
-<g fill="#9fc2a8"><circle cx="40" cy="290" r="50"/><circle cx="90" cy="300" r="34"/><circle cx="760" cy="290" r="44"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+  <title>Літня тераса</title>
+  <defs>
+    <pattern id="dots" width="14" height="14" patternUnits="userSpaceOnUse">
+      <circle cx="7" cy="7" r="2.6" fill="#16130f"/>
+    </pattern>
+  </defs>
+
+  <!-- небо, сонце, бруківка -->
+  <rect width="800" height="600" fill="#f4f1ea"/>
+  <rect y="330" width="800" height="150" fill="url(#dots)" opacity=".1"/>
+  <circle cx="636" cy="150" r="92" fill="#e5432a"/>
+  <rect y="480" width="800" height="120" fill="#16130f"/>
+
+  <!-- ліва парасоля: смуги по черзі -->
+  <g stroke="#16130f" stroke-width="8" stroke-linejoin="round">
+    <path d="M60 250a170 170 0 0 1 340 0z" fill="#f4f1ea"/>
+    <path d="M60 250a170 170 0 0 1 86-148L174 250zM230 80a170 170 0 0 1 56 9l-56 161zM343 123a170 170 0 0 1 57 127h-114z" fill="#e5432a"/>
+  </g>
+  <path d="M230 250v230" stroke="#16130f" stroke-width="10"/>
+
+  <!-- права парасоля, менша -->
+  <g stroke="#16130f" stroke-width="8" stroke-linejoin="round">
+    <path d="M440 300a130 130 0 0 1 260 0z" fill="#16130f"/>
+    <path d="M505 187a130 130 0 0 1 130 0l-65 113z" fill="#f4f1ea"/>
+  </g>
+  <path d="M570 300v180" stroke="#16130f" stroke-width="10"/>
+
+  <!-- столики -->
+  <g fill="#16130f">
+    <rect x="150" y="390" width="160" height="12"/>
+    <rect x="500" y="404" width="140" height="12"/>
+  </g>
+  <!-- стільці -->
+  <g fill="none" stroke="#16130f" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M96 344v136M96 428h52v52"/>
+    <path d="M364 344v136M364 428h-52v52"/>
+    <path d="M454 362v118M454 438h46v42"/>
+    <path d="M686 362v118M686 438h-46v42"/>
+  </g>
+  <!-- склянки на столах -->
+  <g fill="#e5432a" stroke="#16130f" stroke-width="6" stroke-linejoin="round">
+    <path d="M196 350h28l-4 38h-20zM250 356h24l-3 32h-18z"/>
+    <path d="M556 366h28l-4 36h-20z"/>
+  </g>
+
+  <!-- вазон -->
+  <path d="M724 420h56l-8 60h-40z" fill="#f4f1ea" stroke="#16130f" stroke-width="8" stroke-linejoin="round"/>
+  <g fill="#16130f">
+    <path d="M752 420c-4-44-26-68-52-76 2 38 20 62 52 76z"/>
+    <path d="M752 420c2-50 18-80 44-92 4 42-10 72-44 92z"/>
+  </g>
 </svg>

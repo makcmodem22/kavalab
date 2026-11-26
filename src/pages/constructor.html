@@ -1,0 +1,173 @@
+<!--
+title: Конструктор напою — КаваLab
+description: Зберіть каву під себе: основа, розмір, молоко, до трьох сиропів і топінги. Ціна та шари напою оновлюються з кожним вибором.
+script: js/builder.js
+-->
+<main id="main" class="pb-24 lg:pb-32">
+
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="display-1">Конструктор</h1>
+      <p class="lead">Сім кроків до вашої чашки. Келих праворуч показує шари напою, а чек під ним — з чого складається ціна.</p>
+    </header>
+  </div>
+
+  <div class="wrap mt-10">
+    <div id="builder-error"></div>
+
+    <!-- ===== Форма конструктора: варіанти кожного кроку малює builder.js з data.json ===== -->
+    <form id="builder" class="grid items-start gap-10 lg:grid-cols-[1fr_24rem] lg:gap-14" novalidate>
+      <div>
+        <fieldset class="step">
+          <legend class="step-title display-3"><span class="accent">01</span> Основа</legend>
+          <div id="opt-bases" class="clear-both grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend class="step-title display-3"><span class="accent">02</span> Розмір</legend>
+          <div id="opt-sizes" class="clear-both grid gap-3 sm:grid-cols-3"></div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend class="step-title display-3"><span class="accent">03</span> Молоко</legend>
+          <div id="opt-milks" class="clear-both grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend class="step-title display-3">
+            <span class="accent">04</span> Сиропи
+            <span id="syrup-hint" class="spec muted ml-auto font-normal"></span>
+          </legend>
+          <div id="opt-syrups" class="clear-both grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend class="step-title display-3"><span class="accent">05</span> Топінги</legend>
+          <div id="opt-extras" class="clear-both grid gap-3 sm:grid-cols-2 xl:grid-cols-3"></div>
+        </fieldset>
+
+        <div class="step grid gap-x-10 gap-y-8 sm:grid-cols-2">
+          <div>
+            <p class="mb-3 flex items-baseline justify-between gap-3">
+              <label for="sugar" class="display-3"><span class="accent">06</span> Цукор</label>
+              <output id="sugar-out" for="sugar" class="font-mono text-sm">без цукру</output>
+            </p>
+            <input id="sugar" name="sugar" type="range" min="0" max="3" step="1" value="0" class="range mt-3">
+          </div>
+          <div>
+            <label for="quantity" class="display-3 mb-3 block"><span class="accent">07</span> Кількість</label>
+            <div class="flex gap-2">
+              <button type="button" id="qty-minus" class="btn-icon" aria-label="Зменшити кількість">−</button>
+              <input id="quantity" name="quantity" type="text" inputmode="numeric" class="field text-center font-mono" value="1" maxlength="2" aria-describedby="quantity-error">
+              <button type="button" id="qty-plus" class="btn-icon" aria-label="Збільшити кількість">+</button>
+            </div>
+            <p id="quantity-error" class="error-text" aria-live="polite"></p>
+          </div>
+          <div class="sm:col-span-2">
+            <label for="promo" class="label">Промокод</label>
+            <div class="flex gap-2">
+              <input id="promo" name="promo" type="text" class="field font-mono uppercase" autocomplete="off" maxlength="14" placeholder="Наприклад, KAVA10" aria-describedby="promo-error promo-ok promo-hint">
+              <button type="button" id="promo-apply" class="btn-ghost shrink-0">Застосувати</button>
+            </div>
+            <p id="promo-error" class="error-text" aria-live="polite"></p>
+            <p id="promo-ok" class="text-sm font-bold text-mint dark:text-green-300" aria-live="polite"></p>
+            <p id="promo-hint" class="muted mt-1 text-sm">Для демонстрації працюють коди KAVA10, STUDENT і LAB20.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== Підсумок: келих із шарами та чек ===== -->
+      <aside id="summary" class="panel scroll-mt-24 lg:sticky lg:top-24" aria-labelledby="summary-title">
+        <div class="flex items-baseline justify-between gap-4 border-b-2 border-current pb-4">
+          <h2 id="summary-title" class="spec">Ваш напій</h2>
+          <p class="spec" id="drink-volume"></p>
+        </div>
+
+        <div class="relative mx-auto mt-7 w-36">
+          <span class="absolute -inset-x-4 top-1/2 aspect-square -translate-y-1/2 rounded-full bg-signal" aria-hidden="true"></span>
+          <div class="glass" id="cup-visual" role="img" aria-label="Келих із шарами напою"></div>
+        </div>
+        <p id="drink-name" class="mt-6 text-center font-bold" aria-live="polite"></p>
+        <p id="warnings" class="accent mt-1 min-h-5 text-center text-sm font-bold" aria-live="polite"></p>
+
+        <ul id="formula-legend" class="rule mt-4 space-y-2 border-t pt-4 text-[0.9375rem]"></ul>
+        <ul id="price-lines" class="rule mt-4 space-y-1.5 border-t pt-4 font-mono text-sm"></ul>
+
+        <dl class="rule mt-4 space-y-1.5 border-t pt-4">
+          <div class="flex justify-between">
+            <dt>За чашку</dt>
+            <dd id="price-unit" class="font-mono">—</dd>
+          </div>
+          <div class="flex justify-between">
+            <dt>Разом</dt>
+            <dd id="price-subtotal" class="font-mono">—</dd>
+          </div>
+          <div id="discount-row" class="flex justify-between font-bold text-mint dark:text-green-300" hidden>
+            <dt>Знижка</dt>
+            <dd id="price-discount" class="font-mono"></dd>
+          </div>
+          <div class="flex items-baseline justify-between pt-3">
+            <dt class="font-bold">До сплати</dt>
+            <dd id="price-total" class="font-display text-5xl leading-none font-extrabold" aria-live="polite">—</dd>
+          </div>
+        </dl>
+
+        <div class="mt-6 grid gap-3">
+          <button type="submit" id="add-to-order" class="btn-primary">Додати до замовлення</button>
+          <button type="button" id="save-favorite" class="btn-ghost">Зберегти в «Мої напої»</button>
+        </div>
+        <p id="builder-status" class="mt-3 min-h-5 text-center text-sm font-bold" role="status"></p>
+      </aside>
+    </form>
+
+    <!-- ===== Замовлення і збережені рецепти (localStorage) ===== -->
+    <div class="mt-16 grid gap-12 pb-24 lg:grid-cols-2 lg:gap-16 lg:pb-0">
+      <section aria-labelledby="order-title">
+        <h2 id="order-title" class="display-3 border-b-2 border-current pb-3">Замовлення</h2>
+        <p id="order-empty" class="muted mt-4">Поки порожньо. Зберіть напій і натисніть «Додати до замовлення».</p>
+        <ul id="order-list"></ul>
+        <div id="order-footer" class="mt-4" hidden>
+          <p class="flex items-baseline justify-between font-bold">
+            <span>Сума</span>
+            <span id="order-total" class="font-display text-4xl leading-none font-extrabold">0 ₴</span>
+          </p>
+          <div class="mt-5 flex flex-wrap gap-3">
+            <button type="button" id="order-checkout" class="btn-primary">Оформити</button>
+            <button type="button" id="order-clear" class="btn-ghost">Очистити</button>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="fav-title">
+        <h2 id="fav-title" class="display-3 border-b-2 border-current pb-3">Мої напої</h2>
+        <p id="favorites-empty" class="muted mt-4">Збережені рецепти зʼявляться тут і залишаться після перезавантаження сторінки.</p>
+        <ul id="favorites-list"></ul>
+      </section>
+    </div>
+  </div>
+
+  <!-- Мобільна липка панель: на телефоні блок «Ваш напій» далеко під формою -->
+  <div class="rule fixed inset-x-0 bottom-0 z-30 border-t-2 bg-paper lg:hidden dark:bg-ink">
+    <div class="wrap flex items-center justify-between gap-4 py-3">
+      <p>
+        <span class="spec muted block">До сплати</span>
+        <span id="mobile-total" class="font-display text-4xl leading-none font-extrabold">—</span>
+      </p>
+      <a href="#summary" class="btn-primary min-h-11 py-2">Підсумок</a>
+    </div>
+  </div>
+
+  <!-- ===== Підтвердження замовлення ===== -->
+  <dialog id="checkout-dialog" class="dialog p-6 sm:p-8" aria-labelledby="checkout-title">
+    <form method="dialog">
+      <h2 id="checkout-title" class="display-3">Підтвердити замовлення?</h2>
+      <p id="checkout-summary" class="mt-4 font-mono text-lg font-bold"></p>
+      <p class="muted mt-3">Це навчальний прототип: оплата й надсилання замовлення не реалізовані, дані нікуди не передаються.</p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <button type="submit" value="confirm" class="btn-primary">Підтвердити</button>
+        <button type="submit" value="cancel" class="btn-ghost">Скасувати</button>
+      </div>
+    </form>
+  </dialog>
+
+</main>

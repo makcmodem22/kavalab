@@ -1,121 +1,417 @@
 @import "tailwindcss";
 
-/* Сканувати всі HTML і JS у public, щоб Tailwind згенерував лише потрібні класи */
-@source "../public";
+/* Tailwind шукає класи в шаблоні й сторінках (src) та в JS-модулях, які малюють розмітку */
+@source "./";
+@source "../public/js";
 
 /* Темна тема вмикається класом .dark на <html> (перемикач зберігає вибір у localStorage) */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ---------- Дизайн-токени ---------- */
 @theme {
-  --font-display: "Lora", Georgia, "Times New Roman", serif;
-  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: "Sofia Sans Extra Condensed", "Display Fallback", "Display Fallback Wide", sans-serif;
+  --font-sans: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas, monospace;
 
-  --color-cream: #f6efe6;
-  --color-foam: #fff8ee;
-  --color-latte: #e8d5bf;
-  --color-caramel: #b86b2a;
-  --color-caramel-light: #e0a15e;
-  --color-coffee: #6b3e26;
-  --color-espresso: #2b1a12;
-  --color-roast: #17110d;
-  --color-roast-2: #221912;
-  --color-roast-3: #33261c;
-  --color-mint: #3f7a5a;
+  --color-paper: #f4f1ea;       /* папір: основне тло */
+  --color-paper-2: #e8e3d7;     /* тонований папір: плашки */
+  --color-ink: #16130f;         /* фарба: текст і темне тло */
+  --color-ink-2: #231f1a;
+  --color-ink-3: #353029;
+  --color-signal: #e5432a;      /* акцент: кіновар, як на етикетці кави */
+  --color-signal-deep: #b8301a; /* акцентний текст на світлому тлі (контраст 5,3:1) */
+  --color-signal-soft: #ff7a5c; /* акцентний текст на темному тлі */
+  --color-mint: #2f6b4d;
+
+  --ease-swift: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Запасні шрифти з підігнаною шириною: поки вантажиться конденсований, заголовки займають
+   майже стільки ж місця, тож після заміни шрифту сторінка не «стрибає». */
+@font-face {
+  font-family: "Display Fallback";
+  src: local("Arial Narrow");
+  size-adjust: 74%;
+}
+@font-face {
+  font-family: "Display Fallback Wide";
+  src: local("Arial");
+  size-adjust: 61%;
+}
+
+/* ---------- База ---------- */
 @layer base {
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
   }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      transition-duration: 0.01ms !important;
-    }
-  }
   body {
-    @apply bg-cream text-espresso font-sans antialiased dark:bg-roast dark:text-latte;
+    @apply bg-paper font-sans text-[1.0625rem] leading-relaxed text-ink antialiased dark:bg-ink dark:text-paper;
   }
   h1, h2, h3 {
-    @apply font-display text-balance;
+    @apply text-balance;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-caramel;
+    @apply outline-3 outline-offset-3 outline-signal-deep dark:outline-signal-soft;
   }
   button, [role="button"], label[for], summary {
     cursor: pointer;
   }
+  ::selection {
+    @apply bg-signal text-ink;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-delay: 0s !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 }
 
-/* Базова кнопка оголошена як утиліта, щоб її можна було підключати через @apply у варіантах */
+/* ---------- Утиліти, які потрібні всередині @apply ---------- */
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+  @apply inline-flex min-h-13 items-center justify-center gap-3 border-2 px-6 py-3 text-base leading-tight font-bold transition-colors duration-200 active:translate-y-px disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+/* Підкреслення, що «домальовується» зліва направо при наведенні */
+@utility u-draw {
+  background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 2px;
+  transition: background-size 0.35s var(--ease-swift);
+  &:hover, &:focus-visible, &[aria-current="page"] {
+    background-size: 100% 2px;
+  }
+}
+
+/* Контейнер із полями по боках: однакові лівий і правий краї на всіх сторінках */
+@utility wrap {
+  @apply mx-auto w-full max-w-[84rem] px-5 sm:px-8 lg:px-12;
+}
+
+/* Колір тонких ліній-розділювачів */
+@utility rule {
+  @apply border-ink/20 dark:border-paper/20;
 }
 
 @layer components {
-  .container-x {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  /* --- Каркас --- */
+  .section {
+    @apply py-16 sm:py-20 lg:py-28;
   }
+
+  /* --- Типографіка --- */
+  .display-1, .display-2, .display-3 {
+    @apply font-display font-extrabold uppercase;
+  }
+  .display-1 {
+    @apply text-[clamp(4.25rem,15.5vw,12.5rem)] leading-[0.82];
+  }
+  .display-2 {
+    @apply text-[clamp(3rem,7.4vw,6.25rem)] leading-[0.88];
+  }
+  .display-3 {
+    @apply text-[2rem] leading-[0.95] font-bold sm:text-4xl;
+  }
+  .lead {
+    @apply max-w-xl text-lg text-ink/75 sm:text-xl dark:text-paper/75;
+  }
+  .muted {
+    @apply text-ink/70 dark:text-paper/70;
+  }
+  .accent {
+    @apply text-signal-deep dark:text-signal-soft;
+  }
+  /* Дрібний «лабораторний» підпис моноширинним шрифтом */
+  .spec, .tag {
+    @apply font-mono text-xs leading-normal tracking-[0.06em] uppercase;
+  }
+
+  /* --- Кнопки й посилання --- */
   .btn-primary {
-    @apply btn bg-espresso text-foam hover:bg-coffee dark:bg-caramel-light dark:text-roast dark:hover:bg-latte;
+    @apply btn border-ink bg-ink text-paper hover:border-signal hover:bg-signal hover:text-ink dark:border-paper dark:bg-paper dark:text-ink dark:hover:border-signal dark:hover:bg-signal;
   }
-  .btn-ghost {
-    @apply btn border border-espresso/25 text-espresso hover:bg-espresso/5 dark:border-latte/30 dark:text-latte dark:hover:bg-latte/10;
+  .btn-ghost, .btn-icon {
+    @apply btn border-ink text-ink hover:bg-ink hover:text-paper dark:border-paper dark:text-paper dark:hover:bg-paper dark:hover:text-ink;
   }
-  .card {
-    @apply rounded-3xl border border-espresso/10 bg-foam shadow-sm dark:border-latte/10 dark:bg-roast-2;
+  /* Кнопка для кольорових і темних блоків: не залежить від теми */
+  .btn-signal {
+    @apply btn border-signal bg-signal text-ink hover:border-paper hover:bg-paper;
   }
-  .eyebrow {
-    @apply text-sm font-bold uppercase tracking-[0.14em] text-caramel dark:text-caramel-light;
+  .btn-icon {
+    @apply h-13 w-13 shrink-0 p-0 text-xl;
   }
-  .field {
-    @apply block w-full rounded-2xl border border-espresso/20 bg-white px-4 py-3 text-base text-espresso placeholder:text-espresso/60 focus:border-caramel focus:outline-none focus:ring-2 focus:ring-caramel/30 dark:border-latte/20 dark:bg-roast-3 dark:text-latte dark:placeholder:text-latte/60;
+  /* Стрілка в кнопці чи посиланні зсувається при наведенні */
+  .arrow {
+    @apply inline-block transition-transform duration-300 ease-swift;
   }
-  .field[aria-invalid="true"] {
-    @apply border-red-600 ring-2 ring-red-600/20 dark:border-red-400;
+  :is(a, button):hover > .arrow {
+    @apply translate-x-1.5;
   }
-  .error-text {
-    @apply mt-1.5 min-h-5 text-sm font-medium text-red-700 dark:text-red-300;
-  }
-  .chip {
-    @apply inline-flex items-center gap-2 rounded-full border border-espresso/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-espresso/5 dark:border-latte/20 dark:hover:bg-latte/10;
-  }
-  .chip[aria-pressed="true"], .chip:has(input:checked) {
-    @apply border-espresso bg-espresso text-foam dark:border-caramel-light dark:bg-caramel-light dark:text-roast;
-  }
-  .option-card {
-    @apply relative flex cursor-pointer flex-col gap-1 rounded-2xl border-2 border-espresso/10 bg-white p-4 transition-colors hover:border-caramel/60 dark:border-latte/10 dark:bg-roast-3;
-  }
-  .option-card:has(input:checked) {
-    @apply border-caramel bg-caramel/5 dark:border-caramel-light dark:bg-caramel-light/10;
-  }
-  .option-card:has(input:focus-visible) {
-    @apply outline-2 outline-offset-2 outline-caramel;
-  }
-  .option-card:has(input:disabled) {
-    @apply cursor-not-allowed opacity-45;
+  .link {
+    @apply u-draw inline-flex items-center gap-2 pb-0.5 font-bold;
   }
   .nav-link {
-    @apply rounded-full px-4 py-2 font-semibold text-espresso/80 transition-colors hover:bg-espresso/5 hover:text-espresso dark:text-latte/80 dark:hover:bg-latte/10 dark:hover:text-latte;
+    @apply u-draw pb-1 text-[0.9375rem] font-bold tracking-wide uppercase;
   }
-  .nav-link[aria-current="page"] {
-    @apply bg-espresso text-foam dark:bg-caramel-light dark:text-roast;
+
+  /* Пункт мобільного меню */
+  .menu-link {
+    @apply u-draw inline-block font-display text-[clamp(3rem,14vw,5rem)] leading-[0.95] font-extrabold uppercase;
+  }
+  .menu-link[aria-current="page"] {
+    @apply text-signal-deep dark:text-signal-soft;
+  }
+  /* Кнопка для блоків кольору «кіновар»: чорна в обох темах */
+  .btn-ink {
+    @apply btn border-ink text-ink hover:bg-ink hover:text-paper;
+  }
+
+  /* --- Мітки --- */
+  .tag {
+    @apply inline-flex items-center border border-current px-2 py-0.5;
+  }
+  .tag-hit {
+    @apply border-signal bg-signal text-ink;
+  }
+  .tag-new {
+    @apply border-ink bg-ink text-paper dark:border-paper dark:bg-paper dark:text-ink;
+  }
+
+  /* --- Форми --- */
+  .label {
+    @apply mb-2 block font-bold;
+  }
+  .field {
+    @apply block w-full rounded-none border-2 border-ink/30 bg-transparent px-4 py-3 text-base text-ink placeholder:text-ink/65 focus:border-ink focus:outline-none dark:border-paper/30 dark:text-paper dark:placeholder:text-paper/65 dark:focus:border-paper;
+  }
+  select.field {
+    @apply bg-paper dark:bg-ink;
+  }
+  .field[aria-invalid="true"] {
+    @apply border-red-700 dark:border-red-400;
+  }
+  .error-text {
+    @apply mt-1.5 min-h-5 text-sm font-semibold text-red-700 dark:text-red-300;
+  }
+  .check {
+    @apply h-5 w-5 shrink-0 accent-signal-deep dark:accent-signal-soft;
+  }
+  .range {
+    @apply w-full accent-signal-deep dark:accent-signal-soft;
+  }
+  /* Картка-перемикач у конструкторі: сам <input> прихований, стан видно на всій картці */
+  .option-card {
+    @apply relative flex cursor-pointer flex-col gap-1 border-2 border-ink/25 p-4 leading-snug transition-colors duration-200 hover:border-ink dark:border-paper/25 dark:hover:border-paper;
+  }
+  .option-card:has(input:checked) {
+    @apply border-ink bg-ink text-paper dark:border-paper dark:bg-paper dark:text-ink;
+  }
+  .option-card:has(input:focus-visible) {
+    @apply outline-3 outline-offset-3 outline-signal-deep dark:outline-signal-soft;
+  }
+  .option-card:has(input:disabled) {
+    @apply cursor-not-allowed opacity-45 hover:border-ink/25 dark:hover:border-paper/25;
+  }
+  .option-note {
+    @apply text-sm opacity-75;
+  }
+
+  /* --- Блоки --- */
+  .panel {
+    @apply border-2 border-ink p-5 sm:p-7 dark:border-paper;
+  }
+  /* Вкладка категорії в меню */
+  .tab {
+    @apply border-b-4 border-transparent pb-1 font-display text-2xl leading-none font-bold text-ink/65 uppercase transition-colors hover:text-ink sm:text-3xl dark:text-paper/65 dark:hover:text-paper;
+  }
+  .tab[aria-pressed="true"] {
+    @apply border-signal text-ink dark:text-paper;
+  }
+  /* Плашка під ілюстрацію напою */
+  .art-box {
+    @apply bg-paper-2 text-ink dark:bg-ink-2 dark:text-paper;
+  }
+  /* Рядок у списку хітів: при наведенні інвертується і трохи зсувається */
+  .hit-row {
+    @apply rule grid grid-cols-[1.75rem_1fr_auto] items-center gap-4 border-b py-5 transition-[background-color,color,padding] duration-300 ease-swift hover:bg-ink hover:px-4 hover:text-paper focus-visible:bg-ink focus-visible:px-4 focus-visible:text-paper sm:gap-6 dark:hover:bg-paper dark:hover:text-ink dark:focus-visible:bg-paper dark:focus-visible:text-ink;
+  }
+  /* Картка відгуку: «паперова» в обох темах */
+  .review-card {
+    @apply flex min-h-[25rem] flex-col border-2 border-ink bg-paper p-7 text-ink;
+  }
+  /* Позиція меню: клітинка сітки з лініями, як у друкованому каталозі */
+  .menu-card {
+    @apply rule flex flex-col border-r border-b;
+  }
+  .menu-card .art-box > svg {
+    @apply transition-transform duration-500 ease-swift;
+  }
+  .menu-card:hover .art-box > svg {
+    @apply scale-108;
+  }
+  /* Шапка внутрішньої сторінки: великий заголовок і підводка */
+  .page-head {
+    @apply rule grid gap-6 border-b pt-10 pb-10 lg:grid-cols-[auto_minmax(0,27rem)] lg:items-end lg:justify-between lg:gap-16 lg:pt-14 lg:pb-14;
+  }
+  .page-head > h1 {
+    @apply text-[clamp(3.5rem,14.5vw,10.5rem)];
+  }
+  /* Крок конструктора */
+  .step {
+    @apply rule min-w-0 border-t-2 pt-5 pb-10;
+  }
+  .step-title {
+    @apply float-left mb-5 flex w-full items-baseline gap-3;
+  }
+  /* Плакат у галереї: рамка і легке збільшення при наведенні */
+  .poster {
+    @apply block overflow-hidden border-2 border-ink dark:border-paper;
+  }
+  .poster > img {
+    @apply aspect-[4/3] w-full object-cover transition-transform duration-500 ease-swift;
+  }
+  .poster:hover > img {
+    @apply scale-104;
+  }
+  /* Запитання, що розкривається (<details>) */
+  .faq {
+    @apply rule border-b;
+  }
+  .faq > summary {
+    @apply flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg font-bold;
+  }
+  .faq > summary::-webkit-details-marker {
+    display: none;
+  }
+  .faq > summary::after {
+    content: "+";
+    @apply font-mono text-2xl leading-none font-normal transition-transform duration-300 ease-swift;
+  }
+  .faq[open] > summary::after {
+    @apply rotate-45;
+  }
+  .faq > p {
+    @apply max-w-xl pb-6 text-ink/70 dark:text-paper/70;
+  }
+  .dialog {
+    @apply m-auto w-[min(34rem,calc(100%-2rem))] border-2 border-ink bg-paper p-0 text-ink backdrop:bg-ink/70 dark:border-paper dark:bg-ink dark:text-paper;
+  }
+  .notice {
+    @apply border-2 p-4;
   }
 }
 
-/* Swiper: кольори пагінації під бренд */
-.swiper {
-  --swiper-theme-color: var(--color-caramel);
-  --swiper-pagination-bullet-inactive-color: var(--color-coffee);
+/* ---------- Келих-«формула»: шари напою ---------- */
+/* Шари — це flex-елементи: частка кожного (flex-grow) дорівнює його обʼєму в мл, тому зміни анімуються самим CSS */
+.glass {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  --taper: polygon(6% 0, 94% 0, 82% 100%, 18% 100%);
 }
-.swiper-pagination { position: static !important; margin-top: 1.5rem; }
-/* Крапки пагінації: видима крапка 10px, але зона натискання 24×24px (вимога доступності target-size) */
+.glass-body {
+  position: absolute;
+  inset: 0;
+  clip-path: var(--taper);
+  background: color-mix(in srgb, #ffffff 55%, transparent);
+}
+.glass-fill {
+  position: absolute;
+  inset: auto 0 0;
+  display: flex;
+  flex-direction: column-reverse;
+  transition: height 0.7s var(--ease-swift);
+}
+.glass-layer {
+  flex: 0 1 0;
+  min-height: 0;
+  box-shadow: inset 0 2px 0 var(--color-ink);
+  transition: flex-grow 0.7s var(--ease-swift), background-color 0.4s;
+}
+.glass-outline {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.glass-toppings {
+  position: absolute;
+  inset: auto 6% 100%;
+  height: 3.5rem;
+}
+
+/* ---------- Анімації ---------- */
+/* Поява рядків заголовка: текст «виїжджає» з-під маски */
+.rise {
+  display: block;
+  overflow: hidden;
+  padding-top: 0.06em;
+}
+.rise > span {
+  display: block;
+  animation: rise 0.9s var(--ease-swift) both;
+}
+.rise:nth-child(2) > span { animation-delay: 0.09s; }
+.rise:nth-child(3) > span { animation-delay: 0.18s; }
+@keyframes rise {
+  from { transform: translateY(110%); }
+}
+.fade-up {
+  animation: fade-up 0.8s var(--ease-swift) 0.3s both;
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(1rem); }
+}
+/* Кнопка-«бургер»: коли меню відкрите, дві лінії складаються в хрестик */
+.burger path {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 0.3s var(--ease-swift);
+}
+[aria-expanded="true"] > .burger path:first-child { transform: translateY(4px) rotate(45deg); }
+[aria-expanded="true"] > .burger path:last-child { transform: translateY(-4px) rotate(-45deg); }
+
+/* Пункти мобільного меню зʼявляються по черзі */
+#mobile-nav:not([hidden]) li {
+  animation: fade-up 0.5s var(--ease-swift) both;
+  animation-delay: calc(var(--i, 0) * 50ms);
+}
+
+/* Текст-маніфест: слова «проявляються» під час прокручування (клас ставить home.js).
+   Прозорість 0.5 лишає контраст понад 3:1 — мінімум для великого тексту. */
+.reveal-word {
+  opacity: 0.5;
+  transition: opacity 0.35s;
+}
+.reveal-word.is-on {
+  opacity: 1;
+}
+
+/* ---------- Чек із зубчастим краєм ---------- */
+.receipt {
+  --tooth: 0.75rem;
+  background: #fffdf8;
+  color: var(--color-ink);
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / var(--tooth) 100%;
+}
+
+/* ---------- Swiper: під стиль сайту ---------- */
+.swiper {
+  --swiper-theme-color: var(--color-signal);
+  --swiper-pagination-bullet-inactive-color: currentColor;
+  --swiper-pagination-bullet-inactive-opacity: 0.35;
+}
+.swiper-pagination {
+  position: static !important;
+  margin-top: 1.5rem;
+}
+/* Видима крапка 10px, але зона натискання 24×24px (вимога доступності target-size) */
 .swiper-pagination-bullet {
   width: 24px !important;
   height: 24px !important;
   padding: 7px;
+  border-radius: 0 !important;
   background-clip: content-box;
   margin: 0 2px !important;
 }

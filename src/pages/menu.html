@@ -1,0 +1,71 @@
+<!--
+title: Меню — КаваLab
+description: Меню кав'ярні КаваLab: еспресо-класика, напої з молоком, авторські рафи, холодна кава та десерти. Фільтри за категорією, ціною та «веган».
+script: js/menu.js
+-->
+<main id="main" class="pb-24 lg:pb-32">
+
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="display-1">Меню</h1>
+      <p class="lead">Від подвійного еспресо до рафу «Халва». Шукайте за назвою, обмежуйте ціну або дивіться лише веганське.</p>
+    </header>
+  </div>
+
+  <section class="wrap mt-10" aria-label="Каталог напоїв і десертів">
+
+    <!-- ===== Фільтри: меню оновлюється під час введення, без перезавантаження ===== -->
+    <form id="menu-filters" class="grid gap-6 md:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_auto] lg:items-end" role="search" aria-label="Фільтри меню">
+      <div>
+        <label for="f-q" class="label">Пошук</label>
+        <input id="f-q" name="q" type="search" class="field" placeholder="Наприклад, раф" autocomplete="off" maxlength="40">
+      </div>
+      <div>
+        <p class="label flex justify-between">
+          <label for="f-price">Ціна до</label>
+          <output id="f-price-out" for="f-price" class="font-mono">200 ₴</output>
+        </p>
+        <input id="f-price" name="price" type="range" min="50" max="200" step="5" value="200" class="range my-4">
+      </div>
+      <div>
+        <label for="f-sort" class="label">Сортування</label>
+        <select id="f-sort" name="sort" class="field">
+          <option value="popular">Спочатку хіти</option>
+          <option value="price-asc">Від дешевших</option>
+          <option value="price-desc">Від дорожчих</option>
+          <option value="name">За назвою</option>
+        </select>
+      </div>
+      <label class="flex min-h-13 items-center gap-3 font-bold">
+        <input name="vegan" type="checkbox" class="check">
+        Лише веган
+      </label>
+      <button type="submit" class="sr-only">Показати результати</button>
+    </form>
+
+    <div id="menu-categories" class="mt-12 flex flex-wrap gap-x-7 gap-y-3" role="group" aria-label="Категорії"></div>
+    <p id="menu-count" class="spec muted mt-8" aria-live="polite">Завантаження меню…</p>
+
+    <!-- Позиції меню малює menu.js з data.json -->
+    <ul id="menu-grid" class="rule mt-4 grid border-t border-l sm:grid-cols-2 lg:grid-cols-3">
+      <li class="menu-card h-96 animate-pulse" aria-hidden="true"></li>
+      <li class="menu-card hidden h-96 animate-pulse sm:block" aria-hidden="true"></li>
+      <li class="menu-card hidden h-96 animate-pulse lg:block" aria-hidden="true"></li>
+    </ul>
+  </section>
+
+  <!-- ===== Модальне вікно з деталями позиції ===== -->
+  <dialog id="item-dialog" class="dialog" aria-labelledby="dialog-title">
+    <div class="art-box aspect-[5/3] p-6" data-dialog-art></div>
+    <div class="p-6 sm:p-8">
+      <h2 id="dialog-title" class="display-3" data-dialog-title>Напій</h2>
+      <p class="spec accent mt-2" data-dialog-meta></p>
+      <p class="muted mt-4" data-dialog-text></p>
+      <div class="mt-7 flex flex-wrap gap-3">
+        <a href="constructor.html" class="btn-primary" data-dialog-build>Зібрати у конструкторі</a>
+        <button type="button" class="btn-ghost" data-dialog-close>Закрити</button>
+      </div>
+    </div>
+  </dialog>
+
+</main>

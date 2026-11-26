@@ -1,0 +1,140 @@
+<!--
+title: КаваLab — кав'ярня, де ви збираєте напій самі
+description: Кав'ярня-лабораторія у Львові з онлайн-конструктором напою: оберіть основу, молоко, сиропи й топінги — ціна перерахується одразу.
+libs: swiper
+script: js/home.js
+-->
+<main id="main">
+
+  <!-- ===== Герой: заголовок і жива «формула» напою ===== -->
+  <section class="wrap grid items-center gap-12 pt-10 pb-16 lg:grid-cols-[1.1fr_1fr] lg:gap-16 lg:pt-14 lg:pb-24" aria-labelledby="hero-title">
+    <div>
+      <h1 id="hero-title" class="display-1">
+        <span class="rise"><span>Зберіть</span></span>
+        <span class="rise"><span>свою</span></span>
+        <span class="rise"><span class="text-signal">каву</span></span>
+      </h1>
+      <p class="lead fade-up mt-8">Кав'ярня-лабораторія у Львові. Основу, молоко, сиропи й топінги обираєте ви, а ціна рахується одразу, до гривні.</p>
+      <div class="fade-up mt-8 flex flex-wrap gap-3">
+        <a href="constructor.html" class="btn-primary">Відкрити конструктор <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="menu.html" class="btn-ghost">Усе меню</a>
+      </div>
+    </div>
+
+    <!-- Дані для формули приходять з data.json; приклади перемикаються кнопками -->
+    <div class="panel fade-up" id="formula">
+      <div class="flex items-baseline justify-between gap-4 border-b-2 border-current pb-4">
+        <p class="spec">Формула напою</p>
+        <p class="spec" id="formula-volume">350 мл</p>
+      </div>
+
+      <div class="grid grid-cols-[minmax(0,9rem)_1fr] items-center gap-6 py-7 sm:grid-cols-[minmax(0,12rem)_1fr] sm:gap-9">
+        <div class="relative">
+          <span class="absolute -inset-x-3 top-1/2 aspect-square -translate-y-1/2 rounded-full bg-signal" aria-hidden="true"></span>
+          <div class="glass" id="formula-glass" role="img" aria-label="Келих із шарами напою"></div>
+        </div>
+        <div>
+          <h2 class="display-3" id="formula-name" aria-live="polite">Лате</h2>
+          <ul class="mt-5 space-y-2.5" id="formula-legend">
+            <li class="muted">Завантажуємо рецепт…</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="flex flex-wrap items-end justify-between gap-4 border-t-2 border-current pt-4">
+        <div class="flex flex-wrap gap-x-5 gap-y-2" id="formula-presets" role="group" aria-label="Приклади напоїв"></div>
+        <p class="font-display text-5xl leading-none font-extrabold" id="formula-price">—</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Маніфест: слова проявляються під час прокручування ===== -->
+  <section class="section" aria-label="Наш підхід">
+    <div class="wrap">
+      <p class="max-w-[19ch] font-display text-[clamp(2.5rem,6.2vw,5.25rem)] leading-[0.94] font-bold uppercase" id="manifest">Ми не вирішуємо за вас, яку каву пити. Обсмажуємо зерно щотижня, тримаємо шість видів молока й рахуємо кожен інгредієнт окремо.</p>
+      <a href="about.html" class="link mt-10 text-lg">Як ми працюємо <span class="arrow" aria-hidden="true">→</span></a>
+    </div>
+  </section>
+
+  <!-- ===== Хіти: список із попереднім переглядом напою ===== -->
+  <section class="section pt-0!" aria-labelledby="hits-title">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="hits-title" class="display-2">Хіти бару</h2>
+        <a href="menu.html" class="link text-lg">Усе меню <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+      <div class="mt-10 grid gap-10 lg:grid-cols-[1fr_24rem] lg:gap-16">
+        <ol id="hits" class="rule border-t-2" aria-live="polite">
+          <li class="rule h-24 animate-pulse border-b"></li>
+          <li class="rule h-24 animate-pulse border-b"></li>
+          <li class="rule h-24 animate-pulse border-b"></li>
+        </ol>
+        <!-- На широкому екрані тут зʼявляється ілюстрація напою, на який навели курсор -->
+        <div class="art-box sticky top-28 hidden aspect-square self-start p-10 lg:block" id="hits-preview" aria-hidden="true"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Як це працює: три кроки й приклад чека ===== -->
+  <section class="section bg-paper-2 dark:bg-ink-2" aria-labelledby="receipt-title">
+    <div class="wrap grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <div>
+        <h2 id="receipt-title" class="display-2">Чек без сюрпризів</h2>
+        <p class="lead mt-6">Кожен інгредієнт іде окремим рядком. Вівсяне молоко додає до ціни 20–30 ₴ залежно від розміру, і ви бачите це ще до замовлення.</p>
+        <ol class="rule mt-8 border-t">
+          <li class="rule flex gap-5 border-b py-4">
+            <span class="spec accent w-14 shrink-0 pt-1.5">Крок 1</span>
+            <span>Оберіть основу й розмір: S, M або L.</span>
+          </li>
+          <li class="rule flex gap-5 border-b py-4">
+            <span class="spec accent w-14 shrink-0 pt-1.5">Крок 2</span>
+            <span>Додайте молоко, до трьох сиропів і топінги.</span>
+          </li>
+          <li class="rule flex gap-5 border-b py-4">
+            <span class="spec accent w-14 shrink-0 pt-1.5">Крок 3</span>
+            <span>Збережіть рецепт у «Мої напої» або додайте до замовлення.</span>
+          </li>
+        </ol>
+        <a href="constructor.html" class="btn-primary mt-8">Зібрати свій напій <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+
+      <!-- Рядки чека рахує pricing.js — та сама логіка, що й у конструкторі -->
+      <div class="mx-auto w-full max-w-sm -rotate-2 drop-shadow-xl">
+        <div class="receipt px-7 pt-8 pb-12 font-mono text-sm">
+          <p class="text-center font-display text-4xl leading-none font-extrabold uppercase">КаваLab</p>
+          <p class="mt-1 text-center text-xs">вул. Кавова, 12 · Львів</p>
+          <p class="mt-5 border-y border-dashed border-ink py-2 text-center text-xs tracking-widest uppercase" id="receipt-name">Ваш напій</p>
+          <ul class="mt-4 space-y-2" id="receipt-lines">
+            <li>Рахуємо…</li>
+          </ul>
+          <p class="mt-4 flex justify-between border-t border-dashed border-ink pt-3 text-base font-bold">
+            <span>Разом</span>
+            <span id="receipt-total">—</span>
+          </p>
+          <p class="mt-5 text-center text-xs">Промокод STUDENT: −15% на замовлення</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Відгуки: стос карток (Swiper, ефект cards) ===== -->
+  <section class="overflow-hidden bg-signal py-16 text-ink sm:py-20 lg:py-28" aria-labelledby="reviews-title">
+    <div class="wrap grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
+      <div class="min-w-0">
+        <h2 id="reviews-title" class="display-2">Гості про нас</h2>
+        <p class="mt-6 text-xl font-semibold" id="reviews-summary">Пʼять відгуків від постійних гостей.</p>
+        <div class="mt-8 flex gap-2">
+          <button type="button" class="btn-ink h-13 w-13 p-0 text-xl" data-reviews-prev aria-label="Попередній відгук">←</button>
+          <button type="button" class="btn-ink h-13 w-13 p-0 text-xl" data-reviews-next aria-label="Наступний відгук">→</button>
+          <button type="button" class="btn-ink h-13 px-5" data-reviews-pause aria-pressed="false" hidden>Пауза</button>
+        </div>
+      </div>
+      <div class="min-w-0">
+        <div id="reviews" class="swiper mx-auto w-[min(100%-2rem,26rem)]">
+          <div id="reviews-track" class="swiper-wrapper"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>

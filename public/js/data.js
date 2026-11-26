@@ -25,11 +25,11 @@ export async function loadData() {
 export function renderLoadError(container, onRetry) {
   container.innerHTML = '';
   const box = document.createElement('div');
-  box.className = 'card col-span-full p-6 text-center';
+  box.className = 'panel col-span-full text-center';
   box.setAttribute('role', 'alert');
   box.innerHTML = `
-    <p class="font-display text-xl font-semibold">Не вдалося завантажити дані</p>
-    <p class="mt-2 text-espresso/80 dark:text-latte/80">Перевірте інтернет-зʼєднання та спробуйте ще раз.</p>`;
+    <p class="display-3">Не вдалося завантажити дані</p>
+    <p class="muted mt-2">Перевірте інтернет-зʼєднання та спробуйте ще раз.</p>`;
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'btn-primary mt-4';

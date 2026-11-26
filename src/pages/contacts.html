@@ -1,0 +1,110 @@
+<!--
+title: Контакти — КаваLab
+description: Адреса, години роботи та форма звернення кав'ярні КаваLab у Львові: бронювання столика, кейтеринг, відгуки про напої.
+script: js/contact.js
+-->
+<main id="main" class="pb-24 lg:pb-32">
+
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="display-1">Контакти</h1>
+      <p class="lead">Забронюйте столик, замовте кейтеринг або просто розкажіть, яким був ваш напій. Відповідаємо протягом дня.</p>
+    </header>
+  </div>
+
+  <div class="wrap mt-12 grid items-start gap-14 lg:grid-cols-[1fr_1.35fr] lg:gap-20">
+
+    <!-- ===== Як нас знайти ===== -->
+    <section aria-labelledby="find-title">
+      <h2 id="find-title" class="display-3">Як нас знайти</h2>
+      <img src="img/map.svg" alt="Схема: кав'ярня на розі вулиці Кавової, поруч парк і трамвайна зупинка" width="640" height="420" class="rule mt-6 w-full border-2">
+      <dl class="rule mt-6 border-t-2">
+        <div class="rule grid grid-cols-[7rem_1fr] gap-4 border-b py-4">
+          <dt class="spec muted pt-1">Адреса</dt>
+          <dd class="font-bold">вул. Кавова, 12, Львів</dd>
+        </div>
+        <div class="rule grid grid-cols-[7rem_1fr] gap-4 border-b py-4">
+          <dt class="spec muted pt-1">Години</dt>
+          <dd class="font-bold">Пн–Пт 08:00–21:00<br>Сб–Нд 09:00–21:00</dd>
+        </div>
+        <div class="rule grid grid-cols-[7rem_1fr] gap-4 border-b py-4">
+          <dt class="spec muted pt-1">Телефон</dt>
+          <dd><a class="link" href="tel:+380000000000">+38&nbsp;(000)&nbsp;000&#8209;00&#8209;00</a></dd>
+        </div>
+        <div class="rule grid grid-cols-[7rem_1fr] gap-4 border-b py-4">
+          <dt class="spec muted pt-1">Пошта</dt>
+          <dd><a class="link" href="mailto:hello@kavalab.example">hello@kavalab.example</a></dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ===== Форма звернення: перевірку полів виконує contact.js (регулярні вирази у validation.js) ===== -->
+    <section class="panel" aria-labelledby="form-title">
+      <h2 id="form-title" class="display-3">Напишіть нам</h2>
+      <p class="muted mt-3">Поля з <span aria-hidden="true">*</span><span class="sr-only">зірочкою</span> обовʼязкові.</p>
+
+      <div id="form-summary" class="notice mt-6 border-red-700 bg-red-50 text-red-900 dark:border-red-400 dark:bg-red-950/40 dark:text-red-200" role="alert" tabindex="-1" hidden>
+        <p class="font-bold">Перевірте, будь ласка, поля:</p>
+        <ul class="mt-2 list-disc space-y-1 pl-5"></ul>
+      </div>
+      <div id="form-success" class="notice mt-6 border-mint bg-green-50 text-green-900 dark:bg-green-950/40 dark:text-green-200" role="status" tabindex="-1" hidden>
+        <p class="font-bold">Дякуємо, <span data-success-name></span>! Повідомлення прийнято.</p>
+        <p class="mt-1 text-sm">Це демонстраційна форма: дані перевірено в браузері, але на сервер не надсилалися й ніде не зберігаються.</p>
+      </div>
+
+      <form id="contact-form" class="mt-7 grid gap-x-5 gap-y-4 sm:grid-cols-2" novalidate>
+        <div>
+          <label for="c-name" class="label">Імʼя <span aria-hidden="true">*</span></label>
+          <input id="c-name" name="name" type="text" class="field" autocomplete="given-name" maxlength="40" required aria-describedby="name-error">
+          <p id="name-error" class="error-text"></p>
+        </div>
+        <div>
+          <label for="c-email" class="label">Email <span aria-hidden="true">*</span></label>
+          <input id="c-email" name="email" type="email" class="field" autocomplete="email" inputmode="email" maxlength="120" placeholder="name@example.com" required aria-describedby="email-error">
+          <p id="email-error" class="error-text"></p>
+        </div>
+        <div>
+          <label for="c-phone" class="label">Телефон</label>
+          <input id="c-phone" name="phone" type="tel" class="field font-mono" autocomplete="tel" inputmode="tel" maxlength="19" placeholder="+38 (0XX) XXX-XX-XX" aria-describedby="phone-error">
+          <p id="phone-error" class="error-text"></p>
+        </div>
+        <div>
+          <label for="c-topic" class="label">Тема <span aria-hidden="true">*</span></label>
+          <select id="c-topic" name="topic" class="field" required aria-describedby="topic-error">
+            <option value="">Оберіть тему</option>
+            <option value="feedback">Відгук про напій</option>
+            <option value="booking">Бронювання столика</option>
+            <option value="catering">Кейтеринг для події</option>
+            <option value="job">Хочу працювати у вас</option>
+            <option value="other">Інше</option>
+          </select>
+          <p id="topic-error" class="error-text"></p>
+        </div>
+        <div class="sm:col-span-2">
+          <div class="mb-2 flex items-baseline justify-between gap-4">
+            <label for="c-message" class="font-bold">Повідомлення <span aria-hidden="true">*</span></label>
+            <span id="message-counter" class="muted font-mono text-sm">0 / 500</span>
+          </div>
+          <textarea id="c-message" name="message" rows="5" class="field" required aria-describedby="message-error message-counter"></textarea>
+          <p id="message-error" class="error-text"></p>
+        </div>
+        <!-- Пастка для ботів: людина цього поля не бачить і не заповнює -->
+        <div class="hidden" aria-hidden="true">
+          <label for="c-website">Не заповнюйте це поле</label>
+          <input id="c-website" name="website" type="text" tabindex="-1" autocomplete="off">
+        </div>
+        <div class="sm:col-span-2">
+          <label class="flex items-start gap-3">
+            <input name="consent" type="checkbox" class="check mt-1" required aria-describedby="consent-error">
+            <span>Погоджуюся на обробку даних для відповіді на звернення <span aria-hidden="true">*</span></span>
+          </label>
+          <p id="consent-error" class="error-text"></p>
+        </div>
+        <div class="sm:col-span-2">
+          <button type="submit" class="btn-primary w-full sm:w-auto">Надіслати повідомлення <span class="arrow" aria-hidden="true">→</span></button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+</main>

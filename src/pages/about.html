@@ -1,0 +1,162 @@
+<!--
+title: Про нас — КаваLab
+description: Як працює КаваLab: день кав'ярні від першої партії круасанів до колд брю, простір у плакатах, команда та відповіді на часті запитання.
+libs: swiper glightbox
+script: js/about.js
+-->
+<main id="main" class="pb-24 lg:pb-32">
+
+  <div class="wrap">
+    <header class="page-head">
+      <h1 class="display-1">Про нас</h1>
+      <p class="lead">Ми почали з однієї кавомашини й купи експериментів. Сьогодні це кав'ярня, де пропорції напою обирає гість.</p>
+    </header>
+  </div>
+
+  <!-- ===== Історія ===== -->
+  <section class="wrap section grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-16" aria-labelledby="story-title">
+    <h2 id="story-title" class="display-2">Кожен пʼє каву по-своєму</h2>
+    <div class="space-y-5 text-lg">
+      <p>То чому меню має бути однаковим для всіх? З цього запитання й зʼявилася КаваLab: ми перетворили кав'ярню на лабораторію, де основу, молоко й сиропи гість поєднує сам.</p>
+      <p class="muted">Зерно з Ефіопії, Колумбії та Бразилії обсмажуємо невеликими партіями, працюємо з шістьма видами молока й постійно пробуємо нові сиропи: від лаванди до соняшникової халви.</p>
+    </div>
+  </section>
+
+  <!-- ===== День у кав'ярні за годинами ===== -->
+  <section class="bg-paper-2 py-16 sm:py-20 lg:py-28 dark:bg-ink-2" aria-labelledby="day-title">
+    <div class="wrap grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16">
+      <h2 id="day-title" class="display-2 self-start lg:sticky lg:top-28">Один день у КаваLab</h2>
+      <ol class="rule border-t-2">
+        <li class="rule grid grid-cols-[4.5rem_1fr] gap-x-5 border-b py-6 sm:grid-cols-[7rem_1fr]">
+          <p class="accent font-mono text-lg font-bold">06:00</p>
+          <div>
+            <h3 class="display-3">Печемо круасани</h3>
+            <p class="muted mt-2">Юлія ставить першу партію. До відкриття вона ще тепла.</p>
+          </div>
+        </li>
+        <li class="rule grid grid-cols-[4.5rem_1fr] gap-x-5 border-b py-6 sm:grid-cols-[7rem_1fr]">
+          <p class="accent font-mono text-lg font-bold">07:30</p>
+          <div>
+            <h3 class="display-3">Налаштовуємо еспресо</h3>
+            <p class="muted mt-2">Щоранку підбираємо помел: зерно поводиться по-різному залежно від вологості й віку обсмаження.</p>
+          </div>
+        </li>
+        <li class="rule grid grid-cols-[4.5rem_1fr] gap-x-5 border-b py-6 sm:grid-cols-[7rem_1fr]">
+          <p class="accent font-mono text-lg font-bold">08:00</p>
+          <div>
+            <h3 class="display-3">Відчиняємо двері</h3>
+            <p class="muted mt-2">За день варимо близько 350 чашок. У залі й на терасі 42 місця.</p>
+          </div>
+        </li>
+        <li class="rule grid grid-cols-[4.5rem_1fr] gap-x-5 border-b py-6 sm:grid-cols-[7rem_1fr]">
+          <p class="accent font-mono text-lg font-bold">14:00</p>
+          <div>
+            <h3 class="display-3">Обсмажуємо зерно</h3>
+            <p class="muted mt-2">Раз на тиждень, невеликими партіями: кава не стоїть на полиці місяцями.</p>
+          </div>
+        </li>
+        <li class="rule grid grid-cols-[4.5rem_1fr] gap-x-5 border-b py-6 sm:grid-cols-[7rem_1fr]">
+          <p class="accent font-mono text-lg font-bold">21:00</p>
+          <div>
+            <h3 class="display-3">Ставимо колд брю</h3>
+            <p class="muted mt-2">Він настоюється 16 годин і буде готовий завтра по обіді.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Галерея: карусель Swiper, збільшення через GLightbox ===== -->
+  <section class="section overflow-hidden" aria-labelledby="gallery-title">
+    <div class="wrap">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <div>
+          <h2 id="gallery-title" class="display-2">Простір у плакатах</h2>
+          <p class="muted mt-4">Чотири куточки кав'ярні. Натисніть на плакат, щоб збільшити.</p>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" class="btn-icon" data-gallery-prev aria-label="Попередній плакат">←</button>
+          <button type="button" class="btn-icon" data-gallery-next aria-label="Наступний плакат">→</button>
+        </div>
+      </div>
+
+      <div id="gallery" class="swiper mt-10 overflow-visible!">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <a href="img/gallery/bar.svg" class="glightbox poster" data-gallery="space" data-title="Бар і кавомашина">
+              <img src="img/gallery/bar.svg" alt="Плакат: барна стійка з кавомашиною, чашками й лампами" width="800" height="600" loading="lazy">
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="img/gallery/hall.svg" class="glightbox poster" data-gallery="space" data-title="Зал з арковими вікнами">
+              <img src="img/gallery/hall.svg" alt="Плакат: зал з арковими вікнами, столиками й рослиною" width="800" height="600" loading="lazy">
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="img/gallery/roast.svg" class="glightbox poster" data-gallery="space" data-title="Обсмаження зерна">
+              <img src="img/gallery/roast.svg" alt="Плакат: ростер для обсмаження й лоток зі свіжим зерном" width="800" height="600" loading="lazy">
+            </a>
+          </div>
+          <div class="swiper-slide">
+            <a href="img/gallery/terrace.svg" class="glightbox poster" data-gallery="space" data-title="Літня тераса">
+              <img src="img/gallery/terrace.svg" alt="Плакат: літня тераса з парасолями й столиками" width="800" height="600" loading="lazy">
+            </a>
+          </div>
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Команда ===== -->
+  <section class="wrap grid gap-10 pb-16 lg:grid-cols-[1fr_1.6fr] lg:gap-16 lg:pb-28" aria-labelledby="team-title">
+    <h2 id="team-title" class="display-2">Люди за баром</h2>
+    <ul class="rule border-t-2">
+      <li class="rule grid gap-x-8 gap-y-2 border-b py-6 sm:grid-cols-[1fr_1.2fr]">
+        <div>
+          <h3 class="display-3">Марта Коваль</h3>
+          <p class="spec accent mt-2">Засновниця, Q-грейдер</p>
+        </div>
+        <p class="muted">Відбирає зерно й відповідає за смак кожної партії.</p>
+      </li>
+      <li class="rule grid gap-x-8 gap-y-2 border-b py-6 sm:grid-cols-[1fr_1.2fr]">
+        <div>
+          <h3 class="display-3">Остап Ткач</h3>
+          <p class="spec accent mt-2">Шеф-бариста</p>
+        </div>
+        <p class="muted">Переможець міського латте-арт батлу. Це він вигадав раф «Халва».</p>
+      </li>
+      <li class="rule grid gap-x-8 gap-y-2 border-b py-6 sm:grid-cols-[1fr_1.2fr]">
+        <div>
+          <h3 class="display-3">Юлія Лісова</h3>
+          <p class="spec accent mt-2">Кондитерка</p>
+        </div>
+        <p class="muted">Завдяки їй круасани в нас із шостої ранку, а чизкейк закінчується до вечора.</p>
+      </li>
+    </ul>
+  </section>
+
+  <!-- ===== Часті запитання ===== -->
+  <section class="wrap grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-16" aria-labelledby="faq-title">
+    <h2 id="faq-title" class="display-2">Часті запитання</h2>
+    <div class="rule border-t-2">
+      <details class="faq">
+        <summary>Чи можна прийти з ноутбуком?</summary>
+        <p>Так, у залі є розетки біля кожного столика та безкоштовний Wi‑Fi.</p>
+      </details>
+      <details class="faq">
+        <summary>У вас є безлактозні та веганські позиції?</summary>
+        <p>Так: пʼять видів альтернативного молока і веганські десерти, позначені в меню.</p>
+      </details>
+      <details class="faq">
+        <summary>Чи можна забронювати столик?</summary>
+        <p>Напишіть нам через форму на сторінці «Контакти», вказавши дату, час і кількість гостей.</p>
+      </details>
+      <details class="faq">
+        <summary>Конструктор — це справжнє онлайн-замовлення?</summary>
+        <p>Ні, це навчальний прототип: він рахує ціну та зберігає рецепти у вашому браузері, але не надсилає замовлення.</p>
+      </details>
+    </div>
+  </section>
+
+</main>

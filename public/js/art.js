@@ -1,27 +1,91 @@
 /**
- * Генерує SVG-ілюстрацію напою з параметрів у data.json (тип посуду та кольори).
- * Так не потрібні десятки окремих картинок: одна функція малює чашку, склянку, лід чи тарілку.
+ * Ілюстрації до позицій меню. Замість десятків окремих картинок — один генератор SVG:
+ * тип (чашка, склянка, десерт) і кольори приходять з data.json (поле art).
+ * Стиль плакатний: плоскі заливки й товстий контур кольору тексту (currentColor),
+ * тому ілюстрації однаково добре виглядають у світлій і темній темах.
  */
 const HEX = /^#[0-9a-f]{6}$/i;
-const safe = (color, fallback) => (HEX.test(color ?? '') ? color : fallback);
+const safeColor = (color, fallback) => (HEX.test(color ?? '') ? color : fallback);
 
-export function drinkArt({ type = 'cup', liquid, foam } = {}, label = '') {
-  const l = safe(liquid, '#6b3e26');
-  const f = safe(foam, '#f3e4cf');
+const LINE = 'fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"';
+const THIN = 'fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"';
+const VESSEL_FILL = '#fffdf6';
+
+const steam = `<path d="M88 46c-7-9 7-15 0-24M112 42c-7-9 7-15 0-24" ${LINE} opacity=".4"/>`;
+
+let clipCount = 0; // унікальні id для clipPath, коли на сторінці багато ілюстрацій
+
+/**
+ * Посудина у розрізі з двома шарами: напій і піна над ним.
+ * @param {string} shape  контур посудини (атрибут d)
+ * @param {number} surface висота верхнього краю піни
+ * @param {number} split   висота межі між піною та напоєм
+ */
+function vessel(shape, surface, split, liquid, foam) {
+  const id = `art-clip-${++clipCount}`;
+  return `
+    <clipPath id="${id}"><path d="${shape}"/></clipPath>
+    <path d="${shape}" fill="${VESSEL_FILL}"/>
+    <g clip-path="url(#${id})">
+      <rect y="${split}" width="200" height="200" fill="${liquid}"/>
+      <rect y="${surface}" width="200" height="${split - surface}" fill="${foam}"/>
+      <path d="M0 ${surface}h200M0 ${split}h200" ${THIN}/>
+    </g>
+    <path d="${shape}" ${LINE}/>`;
+}
+
+const plate = `<path d="M30 164h140" ${LINE}/>`;
+
+/** Кожен тип — функція, що повертає вміст SVG. liquid — основний колір, foam — другий. */
+const DRAW = {
+  cup: (liquid, foam) => `
+    ${steam}
+    <path d="M152 98c30-3 30 36-8 40" ${LINE}/>
+    ${vessel('M44 82h112c0 46-20 80-56 80S44 128 44 82z', 82, 102, liquid, foam)}
+    <path d="M34 176h132" ${LINE}/>`,
+
+  'cup-small': (liquid, foam) => `
+    ${steam}
+    <path d="M134 110c20-2 20 26-6 28" ${LINE}/>
+    ${vessel('M62 98h76c0 32-13 58-38 58s-38-26-38-58z', 98, 110, liquid, foam)}
+    <path d="M48 170h104" ${LINE}/>`,
+
+  glass: (liquid, foam) => `
+    ${steam}
+    ${vessel('M60 56h80l-9 116H69z', 70, 98, liquid, foam)}`,
+
+  iced: (liquid, foam) => `
+    <path d="M126 14 108 150" fill="none" stroke="#e5432a" stroke-width="7" stroke-linecap="round"/>
+    ${vessel('M58 42h84l-10 130H68z', 60, 74, liquid, foam)}
+    <g fill="${VESSEL_FILL}" fill-opacity=".75" stroke="currentColor" stroke-width="3" stroke-linejoin="round">
+      <rect x="76" y="84" width="24" height="24" transform="rotate(-10 88 96)"/>
+      <rect x="102" y="104" width="22" height="22" transform="rotate(12 113 115)"/>
+      <rect x="80" y="126" width="22" height="22" transform="rotate(-4 91 137)"/>
+    </g>`,
+
+  croissant: (liquid, foam) => `
+    <path d="M36 150c4-44 34-76 64-76s60 32 64 76c-20-16-38-24-64-24s-44 8-64 24z" fill="${liquid}" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M74 84 62 132M100 76v50M126 84l12 48" fill="none" stroke="${foam}" stroke-width="5" stroke-linecap="round"/>
+    ${plate}`,
+
+  slice: (liquid, foam) => `
+    <path d="M42 152h116V92L42 118z" fill="${foam}" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M42 118 158 92V76L42 102z" fill="${liquid}" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+    ${plate}`,
+
+  brownie: (liquid, foam) => `
+    <path d="M56 88h88v64H56z" fill="${liquid}" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M56 88h88v18c-12 8-20-6-32 2s-18-8-30 0-18-4-26 0z" fill="${foam}" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
+    ${plate}`,
+};
+
+/**
+ * @param {{type?: string, liquid?: string, foam?: string}} art параметри з data.json
+ * @param {string} label назва для скринрідерів
+ * @returns {string} розмітка SVG
+ */
+export function drinkArt({ type, liquid, foam } = {}, label = '') {
+  const draw = DRAW[type] ?? DRAW.cup;
   const title = label ? `<title>${label.replace(/[<>&"]/g, '')}</title>` : '';
-  const open = `<svg viewBox="0 0 200 160" xmlns="http://www.w3.org/2000/svg" role="img" class="h-full w-full">${title}`;
-  const steam = `<g fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" opacity=".25"><path d="M85 34c-8-10 8-16 0-26"/><path d="M105 30c-8-10 8-16 0-26"/></g>`;
-
-  switch (type) {
-    case 'cup-small':
-      return `${open}${steam}<ellipse cx="100" cy="132" rx="62" ry="12" fill="#000" opacity=".08"/><ellipse cx="100" cy="126" rx="56" ry="12" fill="#fffaf2"/><path d="M128 88c18 0 18 26 0 26" fill="none" stroke="#f2e6d6" stroke-width="8"/><path d="M68 70h64c0 34-10 52-32 52s-32-18-32-52z" fill="#fffaf2"/><ellipse cx="100" cy="70" rx="32" ry="8" fill="${f}"/><ellipse cx="100" cy="71" rx="26" ry="5" fill="${l}"/></svg>`;
-    case 'glass':
-      return `${open}${steam}<ellipse cx="100" cy="142" rx="44" ry="8" fill="#000" opacity=".08"/><path d="M70 40h60l-6 98H76z" fill="#ffffff" opacity=".55"/><path d="M73 78h54l-3 60H76z" fill="${l}"/><path d="M71.5 52h57l-1.5 26H73z" fill="${f}"/><path d="M70 40h60l-6 98H76z" fill="none" stroke="#d9c6ad" stroke-width="3"/></svg>`;
-    case 'iced':
-      return `${open}<ellipse cx="100" cy="142" rx="44" ry="8" fill="#000" opacity=".08"/><path d="M66 36h68l-8 102H74z" fill="#ffffff" opacity=".5"/><path d="M69 60h62l-6 78H75z" fill="${l}"/><path d="M69 60h62l-1 12H70z" fill="${f}" opacity=".9"/><g fill="#ffffff" opacity=".6"><rect x="80" y="66" width="18" height="16" rx="4" transform="rotate(-12 89 74)"/><rect x="102" y="80" width="18" height="16" rx="4" transform="rotate(10 111 88)"/><rect x="84" y="96" width="16" height="14" rx="4"/></g><rect x="112" y="18" width="6" height="70" rx="3" fill="#b86b2a" transform="rotate(12 115 50)"/><path d="M66 36h68l-8 102H74z" fill="none" stroke="#d9c6ad" stroke-width="3"/></svg>`;
-    case 'plate':
-      return `${open}<ellipse cx="100" cy="122" rx="78" ry="18" fill="#000" opacity=".08"/><ellipse cx="100" cy="116" rx="74" ry="18" fill="#fffaf2"/><ellipse cx="100" cy="114" rx="56" ry="12" fill="#efe1cd"/><path d="M58 108c6-30 30-46 50-44s32 18 34 44c-18-8-66-8-84 0z" fill="${l}"/><path d="M70 96c10-14 26-22 42-18M76 104c12-8 28-10 44-6" fill="none" stroke="${f}" stroke-width="5" stroke-linecap="round"/></svg>`;
-    default:
-      return `${open}${steam}<ellipse cx="100" cy="136" rx="74" ry="14" fill="#000" opacity=".08"/><ellipse cx="100" cy="130" rx="68" ry="14" fill="#fffaf2"/><path d="M140 70c24 0 24 36 0 36" fill="none" stroke="#f2e6d6" stroke-width="9"/><path d="M54 58h92c0 48-14 70-46 70S54 106 54 58z" fill="#fffaf2"/><ellipse cx="100" cy="58" rx="46" ry="11" fill="#fffaf2"/><ellipse cx="100" cy="59" rx="40" ry="8" fill="${l}"/><path d="M100 66c-10-5-14-9-13-12 1-4 8-4 13 1 5-5 12-5 13-1 1 3-3 7-13 12z" fill="${f}"/></svg>`;
-  }
+  return `<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" role="img" class="h-full w-full">${title}${draw(safeColor(liquid, '#6b3e26'), safeColor(foam, '#f3e4cf'))}</svg>`;
 }

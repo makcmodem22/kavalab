@@ -34,7 +34,7 @@ function syncURL() {
 function renderCategories() {
   const all = [{ id: 'all', name: 'Усе меню' }, ...data.categories];
   categoriesEl.innerHTML = all.map((c) => `
-    <button type="button" class="chip" data-cat="${c.id}" aria-pressed="${state.category === c.id}">${escapeHTML(c.name)}</button>`).join('');
+    <button type="button" class="tab" data-cat="${c.id}" aria-pressed="${state.category === c.id}">${escapeHTML(c.name)}</button>`).join('');
 }
 
 function filtered() {
@@ -54,20 +54,29 @@ function filtered() {
   return list.sort(sorters[state.sort] ?? sorters.popular);
 }
 
+const TAG_CLASSES = { hit: 'tag tag-hit', new: 'tag tag-new' };
+
 function card(item) {
-  const tags = [...item.tags.map((t) => TAG_LABELS[t]), item.vegan ? 'Веган' : null].filter(Boolean);
+  const tags = [
+    ...item.tags.map((tag) => `<span class="${TAG_CLASSES[tag] ?? 'tag'}">${TAG_LABELS[tag]}</span>`),
+    item.vegan ? '<span class="tag">Веган</span>' : '',
+  ].join('');
   return `
-    <li class="card flex flex-col overflow-hidden">
-      <div class="aspect-[5/4] bg-latte/60 p-5 text-espresso dark:bg-roast-3 dark:text-latte">${drinkArt(item.art, item.name)}</div>
-      <div class="flex flex-1 flex-col gap-2 p-5">
-        <div class="flex flex-wrap gap-1.5">${tags.map((t) => `<span class="rounded-full bg-caramel/15 px-2.5 py-0.5 text-xs font-bold text-coffee dark:bg-caramel-light/15 dark:text-caramel-light">${t}</span>`).join('')}</div>
-        <div class="flex items-baseline justify-between gap-3">
-          <h2 class="text-xl font-semibold">${escapeHTML(item.name)}</h2>
-          <p class="shrink-0 font-bold">${formatUAH(item.price)}</p>
+    <li class="menu-card">
+      <div class="art-box relative aspect-[4/3] overflow-hidden p-6">
+        ${drinkArt(item.art, item.name)}
+        <div class="absolute top-4 left-4 flex flex-wrap gap-1.5">${tags}</div>
+      </div>
+      <div class="flex flex-1 flex-col p-5 sm:p-6">
+        <div class="flex items-baseline justify-between gap-4">
+          <h2 class="display-3">${escapeHTML(item.name)}</h2>
+          <p class="shrink-0 font-mono text-lg font-bold">${formatUAH(item.price)}</p>
         </div>
-        <p class="text-sm text-espresso/70 dark:text-latte/70">${escapeHTML(item.volume)}</p>
-        <p class="line-clamp-2 flex-1 text-espresso/80 dark:text-latte/80">${escapeHTML(item.description)}</p>
-        <button type="button" class="btn-ghost mt-2 py-2" data-details="${item.id}">Детальніше<span class="sr-only"> про ${escapeHTML(item.name)}</span></button>
+        <p class="spec muted mt-2">${escapeHTML(item.volume)}</p>
+        <p class="muted mt-3 line-clamp-2 flex-1">${escapeHTML(item.description)}</p>
+        <button type="button" class="link mt-5 self-start" data-details="${item.id}">
+          Детальніше<span class="sr-only"> про ${escapeHTML(item.name)}</span> <span class="arrow" aria-hidden="true">→</span>
+        </button>
       </div>
     </li>`;
 }
@@ -76,7 +85,11 @@ function render() {
   const items = filtered();
   grid.innerHTML = items.length
     ? items.map(card).join('')
-    : `<li class="card col-span-full p-8 text-center"><p class="font-display text-xl font-semibold">Нічого не знайшли</p><p class="mt-2 text-espresso/80 dark:text-latte/80">Спробуйте змінити фільтри.</p><button type="button" class="btn-primary mt-4" data-reset>Скинути фільтри</button></li>`;
+    : `<li class="menu-card col-span-full items-start p-8">
+        <p class="display-3">Нічого не знайшли</p>
+        <p class="muted mt-2">Спробуйте змінити фільтри.</p>
+        <button type="button" class="btn-primary mt-5" data-reset>Скинути фільтри</button>
+      </li>`;
   countEl.textContent = `Знайдено позицій: ${items.length}`;
   categoriesEl.querySelectorAll('[data-cat]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.cat === state.category)));
   priceOut.textContent = formatUAH(state.maxPrice);
