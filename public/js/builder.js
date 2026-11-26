@@ -322,7 +322,7 @@ async function init() {
     config = (await loadData()).builder;
   } catch (error) {
     console.warn('Не вдалося завантажити конструктор:', error);
-    form.hidden = true;
+    $('builder-loading').remove();
     renderLoadError($('builder-error'), () => location.reload());
     return;
   }
@@ -332,6 +332,9 @@ async function init() {
   update();
   renderOrder();
   renderFavorites();
+  // Форму показуємо вже заповненою — замість блоку «Завантажуємо…»
+  $('builder-loading').remove();
+  form.hidden = false;
 }
 
 init();

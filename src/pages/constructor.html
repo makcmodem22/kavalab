@@ -14,9 +14,11 @@ script: js/builder.js
 
   <div class="wrap mt-10">
     <div id="builder-error"></div>
+    <!-- Поки вантажиться data.json, місце форми займає цей блок: так сторінка не «стрибає» -->
+    <p id="builder-loading" class="spec muted min-h-screen" role="status">Завантажуємо конструктор…</p>
 
     <!-- ===== Форма конструктора: варіанти кожного кроку малює builder.js з data.json ===== -->
-    <form id="builder" class="grid items-start gap-10 lg:grid-cols-[1fr_24rem] lg:gap-14" novalidate>
+    <form id="builder" class="grid items-start gap-10 lg:grid-cols-[1fr_24rem] lg:gap-14" novalidate hidden>
       <div>
         <fieldset class="step">
           <legend class="step-title display-3"><span class="accent">01</span> Основа</legend>

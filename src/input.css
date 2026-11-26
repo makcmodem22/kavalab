@@ -360,6 +360,14 @@
 .fade-up {
   animation: fade-up 0.8s var(--ease-swift) 0.3s both;
 }
+/* Те саме без прозорості — для головного тексту героя: він має бути видимим з першого кадру,
+   інакше браузер пізніше зараховує «найбільший вміст» (LCP) і сторінка здається повільнішою */
+.slide-up {
+  animation: slide-up 0.8s var(--ease-swift) both;
+}
+@keyframes slide-up {
+  from { transform: translateY(1rem); }
+}
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(1rem); }
 }
