@@ -4,6 +4,7 @@
 Багатосторінковий сайт кав'ярні з головною функцією — **інтерактивним конструктором напою** з динамічним перерахунком ціни.
 
 - 🌐 Сайт: https://kavalab-lviv.vercel.app
+- 📦 Код: https://github.com/makcmodem22/kavalab
 - 🧪 CI/CD: GitHub Actions → тести → автодеплой на Vercel при кожному `git push` у `main`
 
 ## Сторінки
