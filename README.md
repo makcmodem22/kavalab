@@ -58,8 +58,7 @@ npm run check      # збірка + валідація HTML + тести
 
 ## Налаштування автодеплою
 
-У репозиторії GitHub → *Settings → Secrets and variables → Actions* додати:
-`VERCEL_TOKEN` (створюється на vercel.com/account/tokens), `VERCEL_ORG_ID` і `VERCEL_PROJECT_ID` (з файлу `.vercel/project.json` після `vercel link`).
+У репозиторії GitHub → *Settings → Secrets and variables → Actions* додати секрет `VERCEL_TOKEN` (створюється на vercel.com/account/tokens зі scope команди, де лежить проєкт). ID команди й проєкту вже вказані у workflow — вони не секретні.
 
 ## Обмеження прототипу
 

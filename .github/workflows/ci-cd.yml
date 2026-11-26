@@ -39,9 +39,11 @@ jobs:
     environment:
       name: production
       url: https://kavalab-lviv.vercel.app
+    # ID команди й проєкту Vercel не є секретами (лише адреса, куди деплоїти),
+    # тому вони тут явно. Справжній секрет — лише VERCEL_TOKEN у GitHub Secrets.
     env:
-      VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-      VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+      VERCEL_ORG_ID: team_xvygN8ENn1TfK2pPK95WXLtk
+      VERCEL_PROJECT_ID: prj_iQmsPI6rSdJ5OJFzf3zSYm2OVchV
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
