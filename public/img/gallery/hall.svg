@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="t"><title id="t">Затишний зал з великими вікнами</title>
+<rect width="800" height="600" fill="#f1e2cd"/>
+<g fill="#cfe2e6"><rect x="70" y="60" width="200" height="280" rx="100"/><rect x="300" y="60" width="200" height="280" rx="100"/><rect x="530" y="60" width="200" height="280" rx="100"/></g>
+<g fill="#9fc2a8" opacity=".8"><circle cx="140" cy="290" r="50"/><circle cx="210" cy="300" r="40"/><circle cx="620" cy="280" r="60"/></g>
+<g stroke="#6b3e26" stroke-width="8" fill="none"><rect x="70" y="60" width="200" height="280" rx="100"/><rect x="300" y="60" width="200" height="280" rx="100"/><rect x="530" y="60" width="200" height="280" rx="100"/><path d="M170 60v280M400 60v280M630 60v280"/></g>
+<rect y="360" width="800" height="240" fill="#c9a57c"/>
+<g fill="#6b3e26"><ellipse cx="220" cy="440" rx="110" ry="22"/><rect x="212" y="440" width="16" height="110"/><ellipse cx="580" cy="440" rx="110" ry="22"/><rect x="572" y="440" width="16" height="110"/></g>
+<g fill="#b86b2a"><rect x="80" y="440" width="60" height="90" rx="20"/><rect x="300" y="440" width="60" height="90" rx="20"/><rect x="440" y="440" width="60" height="90" rx="20"/><rect x="660" y="440" width="60" height="90" rx="20"/></g>
+<g fill="#fff8ee"><path d="M190 404h30l-3 30h-24z"/><path d="M590 404h30l-3 30h-24z"/></g>
+<g fill="#3f7a5a"><path d="M740 360c-10-60 30-90 30-90s10 50-20 90z"/><path d="M752 360c20-50 50-60 50-60s-10 40-40 60z"/></g>
+<rect x="730" y="360" width="40" height="50" rx="8" fill="#6b3e26"/>
+<g stroke="#e0a15e" stroke-width="4"><path d="M400 0v30"/></g><circle cx="400" cy="40" r="14" fill="#e0a15e"/>
+</svg>

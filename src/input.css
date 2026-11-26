@@ -1,0 +1,121 @@
+@import "tailwindcss";
+
+/* Сканувати всі HTML і JS у public, щоб Tailwind згенерував лише потрібні класи */
+@source "../public";
+
+/* Темна тема вмикається класом .dark на <html> (перемикач зберігає вибір у localStorage) */
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Lora", Georgia, "Times New Roman", serif;
+  --font-sans: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-cream: #f6efe6;
+  --color-foam: #fff8ee;
+  --color-latte: #e8d5bf;
+  --color-caramel: #b86b2a;
+  --color-caramel-light: #e0a15e;
+  --color-coffee: #6b3e26;
+  --color-espresso: #2b1a12;
+  --color-roast: #17110d;
+  --color-roast-2: #221912;
+  --color-roast-3: #33261c;
+  --color-mint: #3f7a5a;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+  body {
+    @apply bg-cream text-espresso font-sans antialiased dark:bg-roast dark:text-latte;
+  }
+  h1, h2, h3 {
+    @apply font-display text-balance;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-caramel;
+  }
+  button, [role="button"], label[for], summary {
+    cursor: pointer;
+  }
+}
+
+/* Базова кнопка оголошена як утиліта, щоб її можна було підключати через @apply у варіантах */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-base font-semibold transition-colors duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+  }
+  .btn-primary {
+    @apply btn bg-espresso text-foam hover:bg-coffee dark:bg-caramel-light dark:text-roast dark:hover:bg-latte;
+  }
+  .btn-ghost {
+    @apply btn border border-espresso/25 text-espresso hover:bg-espresso/5 dark:border-latte/30 dark:text-latte dark:hover:bg-latte/10;
+  }
+  .card {
+    @apply rounded-3xl border border-espresso/10 bg-foam shadow-sm dark:border-latte/10 dark:bg-roast-2;
+  }
+  .eyebrow {
+    @apply text-sm font-bold uppercase tracking-[0.14em] text-caramel dark:text-caramel-light;
+  }
+  .field {
+    @apply block w-full rounded-2xl border border-espresso/20 bg-white px-4 py-3 text-base text-espresso placeholder:text-espresso/60 focus:border-caramel focus:outline-none focus:ring-2 focus:ring-caramel/30 dark:border-latte/20 dark:bg-roast-3 dark:text-latte dark:placeholder:text-latte/60;
+  }
+  .field[aria-invalid="true"] {
+    @apply border-red-600 ring-2 ring-red-600/20 dark:border-red-400;
+  }
+  .error-text {
+    @apply mt-1.5 min-h-5 text-sm font-medium text-red-700 dark:text-red-300;
+  }
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-espresso/20 px-4 py-2 text-sm font-semibold transition-colors hover:bg-espresso/5 dark:border-latte/20 dark:hover:bg-latte/10;
+  }
+  .chip[aria-pressed="true"], .chip:has(input:checked) {
+    @apply border-espresso bg-espresso text-foam dark:border-caramel-light dark:bg-caramel-light dark:text-roast;
+  }
+  .option-card {
+    @apply relative flex cursor-pointer flex-col gap-1 rounded-2xl border-2 border-espresso/10 bg-white p-4 transition-colors hover:border-caramel/60 dark:border-latte/10 dark:bg-roast-3;
+  }
+  .option-card:has(input:checked) {
+    @apply border-caramel bg-caramel/5 dark:border-caramel-light dark:bg-caramel-light/10;
+  }
+  .option-card:has(input:focus-visible) {
+    @apply outline-2 outline-offset-2 outline-caramel;
+  }
+  .option-card:has(input:disabled) {
+    @apply cursor-not-allowed opacity-45;
+  }
+  .nav-link {
+    @apply rounded-full px-4 py-2 font-semibold text-espresso/80 transition-colors hover:bg-espresso/5 hover:text-espresso dark:text-latte/80 dark:hover:bg-latte/10 dark:hover:text-latte;
+  }
+  .nav-link[aria-current="page"] {
+    @apply bg-espresso text-foam dark:bg-caramel-light dark:text-roast;
+  }
+}
+
+/* Swiper: кольори пагінації під бренд */
+.swiper {
+  --swiper-theme-color: var(--color-caramel);
+  --swiper-pagination-bullet-inactive-color: var(--color-coffee);
+}
+.swiper-pagination { position: static !important; margin-top: 1.5rem; }
+/* Крапки пагінації: видима крапка 10px, але зона натискання 24×24px (вимога доступності target-size) */
+.swiper-pagination-bullet {
+  width: 24px !important;
+  height: 24px !important;
+  padding: 7px;
+  background-clip: content-box;
+  margin: 0 2px !important;
+}

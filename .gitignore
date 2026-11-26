@@ -1,0 +1,7 @@
+node_modules/
+.vercel/
+public/css/styles.css
+.DS_Store
+*.log
+.vercel
+.env*.local

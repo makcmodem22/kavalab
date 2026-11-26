@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" role="img" aria-labelledby="t"><title id="t">Обсмаження зерна у ростері</title>
+<rect width="800" height="600" fill="#2b1a12"/>
+<circle cx="640" cy="120" r="160" fill="#b86b2a" opacity=".15"/>
+<rect x="180" y="180" width="300" height="220" rx="110" fill="#6b3e26"/>
+<rect x="200" y="200" width="260" height="180" rx="90" fill="#8a5532"/>
+<circle cx="330" cy="290" r="60" fill="#2b1a12"/><circle cx="330" cy="290" r="42" fill="#4a2a18"/>
+<rect x="290" y="80" width="80" height="110" rx="12" fill="#c0c4c8"/><path d="M270 80h120l-20-40h-80z" fill="#9aa0a6"/>
+<rect x="300" y="400" width="60" height="100" fill="#4a2a18"/>
+<ellipse cx="560" cy="470" rx="170" ry="40" fill="#6b3e26"/><ellipse cx="560" cy="460" rx="150" ry="30" fill="#4a2a18"/>
+<g fill="#a8692f"><ellipse cx="500" cy="455" rx="12" ry="8"/><ellipse cx="530" cy="462" rx="12" ry="8"/><ellipse cx="560" cy="452" rx="12" ry="8"/><ellipse cx="590" cy="464" rx="12" ry="8"/><ellipse cx="620" cy="454" rx="12" ry="8"/><ellipse cx="545" cy="470" rx="12" ry="8"/><ellipse cx="605" cy="472" rx="12" ry="8"/></g>
+<g fill="none" stroke="#e0a15e" stroke-width="6" stroke-linecap="round" opacity=".5"><path d="M310 40c-12-18 12-26 0-44"/><path d="M350 40c-12-18 12-26 0-44"/></g>
+<path d="M380 290h140l40 140" fill="none" stroke="#c0c4c8" stroke-width="14" stroke-linecap="round"/>
+</svg>
